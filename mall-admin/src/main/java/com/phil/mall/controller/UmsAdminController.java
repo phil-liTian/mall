@@ -8,7 +8,7 @@ import com.phil.mall.service.UmsAdminService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.phil.mall.dto.UmsAdminLoginParams;
-import com.phil.mall.api.CommonResult;
+import com.phil.mall.common.api.CommonResult;
 
 
 @Controller
@@ -17,8 +17,8 @@ import com.phil.mall.api.CommonResult;
 public class UmsAdminController {
 
   @RequestMapping(value = "/login", method = RequestMethod.POST)
-  public CommonResult login(@RequestBody UmsAdminLoginParams umsAdminLoginParams) {
+  public CommonResult<String> login(@RequestBody UmsAdminLoginParams umsAdminLoginParams) {
     
-    return CommonResult.success("请求成功1231");
+    return CommonResult.success("使用 mall-common 模块的响应类 - 整合成功！");
   }
 }

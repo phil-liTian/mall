@@ -1,4 +1,8 @@
-package com.phil.mall.api;
+/*
+ * @Author: phil
+ * @Date: 2025-12-29 14:53:58
+ */
+package com.phil.mall.common.api;
 
 public class CommonResult<T> {
   private long code;
@@ -13,6 +17,10 @@ public class CommonResult<T> {
 
   public static <T> CommonResult<T> success(T data) {
     return new CommonResult<>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data);
+  }
+
+  public static <T> CommonResult<T> failed(String message) {
+    return new CommonResult<>(ResultCode.FAILED.getCode(), message, null);
   }
 
   public long getCode() {
