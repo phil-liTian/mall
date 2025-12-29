@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品管理 - MongoDB测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #f8fafc;
+            padding: 20px;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .api-method {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .method-get { background: #48bb78; color: white; }
+        .method-post { background: #4299e1; color: white; }
+        .method-put { background: #ed8936; color: white; }
+        .method-delete { background: #f56565; color: white; }
+        .method-patch { background: #9f7aea; color: white; }
+
+        .section-content {
+            padding: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .input-group input, .input-group select, .input-group textarea {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #718096;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4a5568;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+        }
+
+        .response-area {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-left: 4px solid #4299e1;
+            min-height: 60px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .response-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .response-content {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            color: #4a5568;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .status-success {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+
+        .status-error {
+            border-left-color: #f56565;
+            background: #fff5f5;
+        }
+
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+        }
+
+        .product-card h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .product-card p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+
+        .product-card .price {
+            color: #e53e3e;
+            font-weight: bold;
+        }
+
+        .product-card .stock {
+            color: #38a169;
+        }
+
+        .server-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .server-online {
+            background: #48bb78;
+            color: white;
+        }
+
+        .server-offline {
+            background: #f56565;
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4299e1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="server-status" id="serverStatus">
+        <span id="statusText">检测服务器状态...</span>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ 商品管理系统</h1>
+            <p>MongoDB + Spring Boot REST API 测试</p>
+        </div>
+
+        <div class="content">
+            <!-- 服务器状态检查 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">🏥 服务器状态检查</div>
+                    <div class="api-method method-get">GET</div>
+                </div>
+                <div class="section-content">
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="checkServerStatus()">检查状态</button>
+                    </div>
+                    <div class="response-area" id="serverResponse">
+                        <div class="response-title">响应结果:</div>
+                        <div class="response-content">点击检查按钮查看结果...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 创建商品 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">➕ 创建商品</div>
+                    <div class="api-method method-post">POST</div>
+                </div>
+                <div class="section-content">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="productName">商品名称:</label>
+                            <input type="text" id="productName" placeholder="输入商品名称" value="iPhone 15 Pro">
+                        </div>
+                        <div class="input-group">
+                            <label for="productDescription">商品描述:</label>
+                            <textarea id="productDescription" placeholder="输入商品描述" rows="2">最新款iPhone，配备A17 Pro芯片</textarea>
+                        </div>
+                        <div class="input-group">
+                            <label for="productPrice">商品价格:</label>
+                            <input type="number" id="productPrice" placeholder="输入价格" value="7999" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="productStock">商品库存:</label>
+                            <input type="number" id="productStock" placeholder="输入库存" value="100">
+                        </div>
+                        <div class="input-group">
+                            <label for="productCategory">商品分类:</label>
+                            <input type="text" id="productCategory" placeholder="输入分类" value="手机">
+                        </div>
+                        <div class="input-group">
+                            <label for="productImageUrl">商品图片URL:</label>
+                            <input type="text" id="productImageUrl" placeholder="输入图片URL" value="https://example.com/iphone15.jpg">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="createProduct()">创建商品</button>
+                        <button class="btn btn-secondary" onclick="clearCreateForm()">清空表单</button>
+                    </div>
+                    <div class="response-area" id="createResponse">
+                        <div class="response-title">响应结果:</div>
+                        <div class="response-content">点击创建按钮查看结果...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 获取所有商品 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">📋 获取所有商品</div>
+                    <div class="api-method method-get">GET</div>
+                </div>
+                <div class="section-content">
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="getAllProducts()">获取所有商品</button>
+                        <button class="btn btn-secondary" onclick="clearProductList()">清空列表</button>
+                    </div>
+                    <div class="response-area" id="allProductsResponse">
+                        <div class="response-title">商品列表:</div>
+                        <div class="response-content">点击获取按钮查看结果...</div>
+                    </div>
+                    <div id="productList" class="product-list"></div>
+                </div>
+            </div>
+
+            <!-- 搜索商品 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">🔍 搜索商品</div>
+                    <div class="api-method method-get">GET</div>
+                </div>
+                <div class="section-content">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="searchName">按名称搜索:</label>
+                            <input type="text" id="searchName" placeholder="输入商品名称关键词">
+                        </div>
+                        <div class="input-group">
+                            <label for="searchCategory">按分类搜索:</label>
+                            <input type="text" id="searchCategory" placeholder="输入商品分类">
+                        </div>
+                        <div class="input-group">
+                            <label for="minPrice">最低价格:</label>
+                            <input type="number" id="minPrice" placeholder="最低价格" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="maxPrice">最高价格:</label>
+                            <input type="number" id="maxPrice" placeholder="最高价格" step="0.01">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="searchProducts()">搜索商品</button>
+                        <button class="btn btn-success" onclick="getLowStockProducts()">获取低库存商品</button>
+                        <button class="btn btn-secondary" onclick="clearSearchForm()">清空搜索</button>
+                    </div>
+                    <div class="response-area" id="searchResponse">
+                        <div class="response-title">搜索结果:</div>
+                        <div class="response-content">点击搜索按钮查看结果...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 更新商品 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">✏️ 更新商品</div>
+                    <div class="api-method method-put">PUT</div>
+                </div>
+                <div class="section-content">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="updateId">商品ID:</label>
+                            <input type="text" id="updateId" placeholder="输入要更新的商品ID">
+                        </div>
+                        <div class="input-group">
+                            <label for="updateName">商品名称:</label>
+                            <input type="text" id="updateName" placeholder="输入新的商品名称">
+                        </div>
+                        <div class="input-group">
+                            <label for="updatePrice">商品价格:</label>
+                            <input type="number" id="updatePrice" placeholder="输入新的价格" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="updateStock">商品库存:</label>
+                            <input type="number" id="updateStock" placeholder="输入新的库存">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="updateProduct()">更新商品</button>
+                        <button class="btn btn-success" onclick="updateProductStock()">仅更新库存</button>
+                        <button class="btn btn-secondary" onclick="clearUpdateForm()">清空表单</button>
+                    </div>
+                    <div class="response-area" id="updateResponse">
+                        <div class="response-title">响应结果:</div>
+                        <div class="response-content">点击更新按钮查看结果...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 删除商品 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">🗑️ 删除商品</div>
+                    <div class="api-method method-delete">DELETE</div>
+                </div>
+                <div class="section-content">
+                    <div class="input-group">
+                        <label for="deleteId">商品ID:</label>
+                        <input type="text" id="deleteId" placeholder="输入要删除的商品ID">
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-danger" onclick="deleteProduct()">删除商品</button>
+                        <button class="btn btn-secondary" onclick="clearDeleteForm()">清空输入</button>
+                    </div>
+                    <div class="response-area" id="deleteResponse">
+                        <div class="response-title">响应结果:</div>
+                        <div class="response-content">点击删除按钮查看结果...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api/products';
+        const SERVER_URL = 'http://localhost:8080';
+
+        // 检查服务器状态
+        async function checkServerStatus() {
+            const responseDiv = document.getElementById('serverResponse');
+            try {
+                const response = await fetch('/api/users/health');
+                const data = await response.text();
+                
+                responseDiv.className = 'response-area status-success';
+                responseDiv.innerHTML = `
+                    <div class="response-title">服务器状态:</div>
+                    <div class="response-content">✅ 服务器正常运行\n响应: ${data}</div>
+                `;
+                
+                updateServerStatus(true);
+            } catch (error) {
+                responseDiv.className = 'response-area status-error';
+                responseDiv.innerHTML = `
+                    <div class="response-title">服务器状态:</div>
+                    <div class="response-content">❌ 服务器连接失败\n错误: ${error.message}</div>
+                `;
+                
+                updateServerStatus(false);
+            }
+        }
+
+        // 更新服务器状态显示
+        function updateServerStatus(isOnline) {
+            const statusDiv = document.getElementById('serverStatus');
+            const statusText = document.getElementById('statusText');
+            
+            if (isOnline) {
+                statusDiv.className = 'server-status server-online';
+                statusText.textContent = '服务器在线';
+            } else {
+                statusDiv.className = 'server-status server-offline';
+                statusText.textContent = '服务器离线';
+            }
+        }
+
+        // 创建商品
+        async function createProduct() {
+            const responseDiv = document.getElementById('createResponse');
+            const product = {
+                name: document.getElementById('productName').value,
+                description: document.getElementById('productDescription').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                stock: parseInt(document.getElementById('productStock').value),
+                category: document.getElementById('productCategory').value,
+                imageUrl: document.getElementById('productImageUrl').value,
+                status: 'ACTIVE'
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/save`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(product)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    responseDiv.className = 'response-area status-success';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">✅ 商品创建成功:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                } else {
+                    responseDiv.className = 'response-area status-error';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">❌ 商品创建失败:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response-area status-error';
+                responseDiv.innerHTML = `
+                    <div class="response-title">❌ 请求失败:</div>
+                    <div class="response-content">${error.message}</div>
+                `;
+            }
+        }
+
+        // 获取所有商品
+        async function getAllProducts() {
+            const responseDiv = document.getElementById('allProductsResponse');
+            const productListDiv = document.getElementById('productList');
+
+            try {
+                const response = await fetch(API_BASE_URL);
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response-area status-success';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">✅ 成功获取 ${data.length} 个商品:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+
+                    // 显示商品卡片
+                    productListDiv.innerHTML = '';
+                    data.forEach(product => {
+                        const card = document.createElement('div');
+                        card.className = 'product-card';
+                        card.innerHTML = `
+                            <h4>${product.name}</h4>
+                            <p><strong>ID:</strong> ${product.id}</p>
+                            <p><strong>价格:</strong> <span class="price">¥${product.price}</span></p>
+                            <p><strong>库存:</strong> <span class="stock">${product.stock}</span></p>
+                            <p><strong>分类:</strong> ${product.category}</p>
+                            <p><strong>状态:</strong> ${product.status}</p>
+                            <p><strong>描述:</strong> ${product.description}</p>
+                        `;
+                        productListDiv.appendChild(card);
+                    });
+                } else {
+                    responseDiv.className = 'response-area status-error';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">❌ 获取商品失败:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response-area status-error';
+                responseDiv.innerHTML = `
+                    <div class="response-title">❌ 请求失败:</div>
+                    <div class="response-content">${error.message}</div>
+                `;
+            }
+        }
+
+        // 搜索商品
+        async function searchProducts() {
+            const responseDiv = document.getElementById('searchResponse');
+            const name = document.getElementById('searchName').value;
+            const category = document.getElementById('searchCategory').value;
+            const minPrice = document.getElementById('minPrice').value;
+            const maxPrice = document.getElementById('maxPrice').value;
+
+            let url = API_BASE_URL;
+            const params = new URLSearchParams();
+
+            if (name) params.append('name', name);
+            if (category) params.append('category', category);
+            if (minPrice) params.append('minPrice', minPrice);
+            if (maxPrice) params.append('maxPrice', maxPrice);
+
+            if (params.toString()) {
+                url += '/search?' + params.toString();
+            }
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response-area status-success';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">✅ 搜索到 ${data.length} 个商品:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                } else {
+                    responseDiv.className = 'response-area status-error';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">❌ 搜索失败:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response-area status-error';
+                responseDiv.innerHTML = `
+                    <div class="response-title">❌ 请求失败:</div>
+                    <div class="response-content">${error.message}</div>
+                `;
+            }
+        }
+
+        // 获取低库存商品
+        async function getLowStockProducts() {
+            const responseDiv = document.getElementById('searchResponse');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/low-stock?threshold=20`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response-area status-success';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">✅ 找到 ${data.length} 个低库存商品:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                } else {
+                    responseDiv.className = 'response-area status-error';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">❌ 查询失败:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response-area status-error';
+                responseDiv.innerHTML = `
+                    <div class="response-title">❌ 请求失败:</div>
+                    <div class="response-content">${error.message}</div>
+                `;
+            }
+        }
+
+        // 更新商品
+        async function updateProduct() {
+            const responseDiv = document.getElementById('updateResponse');
+            const id = document.getElementById('updateId').value;
+            const product = {
+                name: document.getElementById('updateName').value,
+                price: parseFloat(document.getElementById('updatePrice').value),
+                stock: parseInt(document.getElementById('updateStock').value),
+                description: '更新后的商品',
+                category: '默认分类',
+                imageUrl: 'https://example.com/updated.jpg',
+                status: 'ACTIVE'
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(product)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response-area status-success';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">✅ 商品更新成功:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                } else {
+                    responseDiv.className = 'response-area status-error';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">❌ 商品更新失败:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response-area status-error';
+                responseDiv.innerHTML = `
+                    <div class="response-title">❌ 请求失败:</div>
+                    <div class="response-content">${error.message}</div>
+                `;
+            }
+        }
+
+        // 更新商品库存
+        async function updateProductStock() {
+            const responseDiv = document.getElementById('updateResponse');
+            const id = document.getElementById('updateId').value;
+            const stock = parseInt(document.getElementById('updateStock').value);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/${id}/stock?stock=${stock}`, {
+                    method: 'PATCH'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response-area status-success';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">✅ 库存更新成功:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                } else {
+                    responseDiv.className = 'response-area status-error';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">❌ 库存更新失败:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response-area status-error';
+                responseDiv.innerHTML = `
+                    <div class="response-title">❌ 请求失败:</div>
+                    <div class="response-content">${error.message}</div>
+                `;
+            }
+        }
+
+        // 删除商品
+        async function deleteProduct() {
+            const responseDiv = document.getElementById('deleteResponse');
+            const id = document.getElementById('deleteId').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    responseDiv.className = 'response-area status-success';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">✅ 商品删除成功</div>
+                        <div class="response-content">商品ID: ${id} 已被成功删除</div>
+                    `;
+                } else {
+                    const data = await response.json();
+                    responseDiv.className = 'response-area status-error';
+                    responseDiv.innerHTML = `
+                        <div class="response-title">❌ 商品删除失败:</div>
+                        <div class="response-content">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response-area status-error';
+                responseDiv.innerHTML = `
+                    <div class="response-title">❌ 请求失败:</div>
+                    <div class="response-content">${error.message}</div>
+                `;
+            }
+        }
+
+        // 清空表单函数
+        function clearCreateForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productDescription').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productStock').value = '';
+            document.getElementById('productCategory').value = '';
+            document.getElementById('productImageUrl').value = '';
+        }
+
+        function clearSearchForm() {
+            document.getElementById('searchName').value = '';
+            document.getElementById('searchCategory').value = '';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+        }
+
+        function clearUpdateForm() {
+            document.getElementById('updateId').value = '';
+            document.getElementById('updateName').value = '';
+            document.getElementById('updatePrice').value = '';
+            document.getElementById('updateStock').value = '';
+        }
+
+        function clearDeleteForm() {
+            document.getElementById('deleteId').value = '';
+        }
+
+        function clearProductList() {
+            document.getElementById('productList').innerHTML = '';
+            document.getElementById('allProductsResponse').innerHTML = `
+                <div class="response-title">商品列表:</div>
+                <div class="response-content">点击获取按钮查看结果...</div>
+            `;
+        }
+
+        // 页面加载时检查服务器状态
+        window.onload = function() {
+            checkServerStatus();
+        };
+    </script>
+</body>
+</html>

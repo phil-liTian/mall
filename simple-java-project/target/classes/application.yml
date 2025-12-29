@@ -1,0 +1,54 @@
+# Spring Boot应用配置
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# 应用信息
+spring:
+  application:
+    name: user-service-api
+  
+  # JSON配置
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+  # Redis配置
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+    timeout: 5000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+
+  # MongoDB配置
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/productdb
+
+# 日志配置
+logging:
+  level:
+    com.example: DEBUG
+    org.springframework.web: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# 管理端口
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: health,info

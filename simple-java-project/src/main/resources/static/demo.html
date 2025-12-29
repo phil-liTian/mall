@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserController 接口测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .api-section {
+            margin-bottom: 40px;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .api-header {
+            background: #f8fafc;
+            padding: 20px;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .api-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .api-method {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .method-get { background: #48bb78; color: white; }
+        .method-post { background: #4299e1; color: white; }
+
+        .api-content {
+            padding: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #718096;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4a5568;
+            transform: translateY(-2px);
+        }
+
+        .response-area {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-left: 4px solid #4299e1;
+            min-height: 60px;
+        }
+
+        .response-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .response-content {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #4a5568;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .status-success {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+
+        .status-error {
+            border-left-color: #f56565;
+            background: #fff5f5;
+        }
+
+        .server-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .server-online {
+            background: #48bb78;
+            color: white;
+        }
+
+        .server-offline {
+            background: #f56565;
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4299e1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="server-status" id="serverStatus">
+        <span id="statusText">检测服务器状态...</span>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🚀 UserController 接口测试</h1>
+            <p>测试 UserController 中所有接口的功能和响应</p>
+        </div>
+
+        <div class="content">
+            <!-- 健康检查接口 -->
+            <div class="api-section">
+                <div class="api-header">
+                    <div class="api-title">🏥 健康检查</div>
+                    <div class="api-method method-get">GET</div>
+                </div>
+                <div class="api-content">
+                    <p><strong>接口地址:</strong> <code>/api/users/health</code></p>
+                    <p><strong>描述:</strong> 检查服务是否正常运行</p>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="testHealth()">测试健康检查</button>
+                    </div>
+                    <div class="response-area" id="healthResponse">
+                        <div class="response-title">响应结果:</div>
+                        <div class="response-content">点击测试按钮查看结果...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Redis连接测试 -->
+            <div class="api-section">
+                <div class="api-header">
+                    <div class="api-title">🔌 Redis连接测试</div>
+                    <div class="api-method method-get">GET</div>
+                </div>
+                <div class="api-content">
+                    <p><strong>接口地址:</strong> <code>/api/users/redis/test</code></p>
+                    <p><strong>描述:</strong> 测试Redis连接是否正常</p>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="testRedisConnection()">测试Redis连接</button>
+                    </div>
+                    <div class="response-area" id="redisTestResponse">
+                        <div class="response-title">响应结果:</div>
+                        <div class="response-content">点击测试按钮查看结果...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Redis设置键值对 -->
+            <div class="api-section">
+                <div class="api-header">
+                    <div class="api-title">💾 Redis设置键值对</div>
+                    <div class="api-method method-post">POST</div>
+                </div>
+                <div class="api-content">
+                    <p><strong>接口地址:</strong> <code>/api/users/redis/set</code></p>
+                    <p><strong>描述:</strong> 向Redis中设置键值对</p>
+                    <div class="input-group">
+                        <label for="setKey">键 (Key):</label>
+                        <input type="text" id="setKey" placeholder="输入键名，例如: test:key" value="test:key">
+                    </div>
+                    <div class="input-group">
+                        <label for="setValue">值 (Value):</label>
+                        <input type="text" id="setValue" placeholder="输入键值，例如: Hello Redis!" value="Hello Redis!">
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="setRedisValue()">设置键值对</button>
+                        <button class="btn btn-secondary" onclick="clearSetInputs()">清空输入</button>
+                    </div>
+                    <div class="response-area" id="redisSetResponse">
+                        <div class="response-title">响应结果:</div>
+                        <div class="response-content">点击设置按钮查看结果...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Redis获取值 -->
+            <div class="api-section">
+                <div class="api-header">
+                    <div class="api-title">📖 Redis获取值</div>
+                    <div class="api-method method-get">GET</div>
+                </div>
+                <div class="api-content">
+                    <p><strong>接口地址:</strong> <code>/api/users/redis/get</code></p>
+                    <p><strong>描述:</strong> 从Redis中获取指定键的值</p>
+                    <div class="input-group">
+                        <label for="getKey">键 (Key):</label>
+                        <input type="text" id="getKey" placeholder="输入要获取的键名，例如: test:key" value="test:key">
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="getRedisValue()">获取键值</button>
+                        <button class="btn btn-secondary" onclick="clearGetInputs()">清空输入</button>
+                    </div>
+                    <div class="response-area" id="redisGetResponse">
+                        <div class="response-title">响应结果:</div>
+                        <div class="response-content">点击获取按钮查看结果...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Redis保存用户数据 -->
+            <div class="api-section">
+                <div class="api-header">
+                    <div class="api-title">👤 Redis保存用户数据</div>
+                    <div class="api-method method-post">POST</div>
+                </div>
+                <div class="api-content">
+                    <p><strong>接口地址:</strong> <code>/api/users/redis/save-user</code></p>
+                    <p><strong>描述:</strong> 将用户数据保存到Redis数据库中</p>
+                    <div class="input-group">
+                        <label for="userId">用户ID:</label>
+                        <input type="text" id="userId" placeholder="输入用户ID，例如: 1001" value="1001">
+                    </div>
+                    <div class="input-group">
+                        <label for="username">用户名:</label>
+                        <input type="text" id="username" placeholder="输入用户名，例如: john_doe" value="john_doe">
+                    </div>
+                    <div class="input-group">
+                        <label for="email">邮箱:</label>
+                        <input type="text" id="email" placeholder="输入邮箱地址，例如: john@example.com" value="john@example.com">
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="saveUserToRedis()">保存用户数据</button>
+                        <button class="btn btn-secondary" onclick="clearUserInputs()">清空输入</button>
+                    </div>
+                    <div class="response-area" id="redisSaveUserResponse">
+                        <div class="response-title">响应结果:</div>
+                        <div class="response-content">点击保存按钮查看结果...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 服务器地址配置
+        const SERVER_URL = 'http://localhost:8080';
+        
+        // 检查服务器状态
+        async function checkServerStatus() {
+            const statusElement = document.getElementById('serverStatus');
+            const statusText = document.getElementById('statusText');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/users/health`);
+                if (response.ok) {
+                    statusElement.className = 'server-status server-online';
+                    statusText.textContent = '服务器在线';
+                } else {
+                    statusElement.className = 'server-status server-offline';
+                    statusText.textContent = '服务器异常';
+                }
+            } catch (error) {
+                statusElement.className = 'server-status server-offline';
+                statusText.textContent = '服务器离线';
+            }
+        }
+
+        // 显示响应结果
+        function displayResponse(elementId, data, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            const responseContent = element.querySelector('.response-content');
+            
+            element.className = `response-area ${isSuccess ? 'status-success' : 'status-error'}`;
+            responseContent.textContent = JSON.stringify(data, null, 2);
+        }
+
+        // 显示加载状态
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            const responseContent = element.querySelector('.response-content');
+            responseContent.innerHTML = '正在请求...<span class="loading"></span>';
+        }
+
+        // 健康检查测试
+        async function testHealth() {
+            showLoading('healthResponse');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/users/health`);
+                const data = await response.json();
+                displayResponse('healthResponse', data, response.ok);
+            } catch (error) {
+                displayResponse('healthResponse', { error: error.message }, false);
+            }
+        }
+
+        // Redis连接测试
+        async function testRedisConnection() {
+            showLoading('redisTestResponse');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/users/redis/test`);
+                const data = await response.json();
+                displayResponse('redisTestResponse', data, response.ok);
+            } catch (error) {
+                displayResponse('redisTestResponse', { error: error.message }, false);
+            }
+        }
+
+        // 设置Redis键值对
+        async function setRedisValue() {
+            const key = document.getElementById('setKey').value.trim();
+            const value = document.getElementById('setValue').value.trim();
+            
+            if (!key || !value) {
+                displayResponse('redisSetResponse', { error: '请输入键和值' }, false);
+                return;
+            }
+            
+            showLoading('redisSetResponse');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/users/redis/set?key=${encodeURIComponent(key)}&value=${encodeURIComponent(value)}`, { method: "post" });
+                const data = await response.json();
+                displayResponse('redisSetResponse', data, response.ok);
+            } catch (error) {
+                displayResponse('redisSetResponse', { error: error.message }, false);
+            }
+        }
+
+        // 获取Redis值
+        async function getRedisValue() {
+            const key = document.getElementById('getKey').value.trim();
+            
+            if (!key) {
+                displayResponse('redisGetResponse', { error: '请输入键名' }, false);
+                return;
+            }
+            
+            showLoading('redisGetResponse');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/users/redis/get?key=${encodeURIComponent(key)}`);
+                const data = await response.json();
+                displayResponse('redisGetResponse', data, response.ok);
+            } catch (error) {
+                displayResponse('redisGetResponse', { error: error.message }, false);
+            }
+        }
+
+        // 保存用户数据到Redis
+        async function saveUserToRedis() {
+            const userId = document.getElementById('userId').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            
+            if (!userId || !username || !email) {
+                displayResponse('redisSaveUserResponse', { error: '请填写完整的用户信息' }, false);
+                return;
+            }
+            
+            showLoading('redisSaveUserResponse');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/users/redis/save-user?userId=${encodeURIComponent(userId)}&username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}`, {
+                    method: "POST"
+                });
+                const data = await response.json();
+                displayResponse('redisSaveUserResponse', data, response.ok);
+            } catch (error) {
+                displayResponse('redisSaveUserResponse', { error: error.message }, false);
+            }
+        }
+
+        // 清空输入框
+        function clearSetInputs() {
+            document.getElementById('setKey').value = '';
+            document.getElementById('setValue').value = '';
+        }
+
+        function clearGetInputs() {
+            document.getElementById('getKey').value = '';
+        }
+
+        function clearUserInputs() {
+            document.getElementById('userId').value = '';
+            document.getElementById('username').value = '';
+            document.getElementById('email').value = '';
+        }
+
+        // 页面加载完成后检查服务器状态
+        window.addEventListener('load', function() {
+            checkServerStatus();
+            // 每30秒检查一次服务器状态
+            setInterval(checkServerStatus, 30000);
+        });
+
+        // 添加回车键支持
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('setKey').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') setRedisValue();
+            });
+            document.getElementById('setValue').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') setRedisValue();
+            });
+            document.getElementById('getKey').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') getRedisValue();
+            });
+            document.getElementById('userId').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') saveUserToRedis();
+            });
+            document.getElementById('username').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') saveUserToRedis();
+            });
+            document.getElementById('email').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') saveUserToRedis();
+            });
+        });
+    </script>
+</body>
+</html>
