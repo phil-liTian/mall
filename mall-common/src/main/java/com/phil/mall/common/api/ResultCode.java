@@ -4,7 +4,7 @@
  */
 package com.phil.mall.common.api;
 
-public enum ResultCode {
+public enum ResultCode implements IErrorCode {
     SUCCESS(200, "操作成功"),
     FAILED(500, "操作失败"),
     VALIDATE_FAILED(404, "参数检验失败"),

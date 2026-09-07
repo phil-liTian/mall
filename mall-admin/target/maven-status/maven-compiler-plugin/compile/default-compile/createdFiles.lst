@@ -1,8 +1,7 @@
 com/phil/mall/controller/UmsAdminController.class
 com/phil/mall/model/UmsAdmin.class
-com/phil/mall/api/ResultCode.class
-com/phil/mall/api/CommonResult.class
 com/phil/mall/service/UmsAdminService.class
 com/phil/mall/MallAdminApplication.class
 com/phil/mall/dto/UmsAdminLoginParams.class
 com/phil/mall/service/impl/UmsAdminServiceImpl.class
+com/phil/mall/common/exception/GlobalExceptionHandler.class
