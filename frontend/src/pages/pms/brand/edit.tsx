@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Card, Form, Input, InputNumber, Switch, Button, Space, message } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
 import { createBrand, updateBrand, getBrand, type PmsBrand } from '@/api/brand'
+import ImageUpload from '@/components/ImageUpload'
 
 export default function BrandEdit() {
   const navigate = useNavigate()
@@ -62,10 +63,10 @@ export default function BrandEdit() {
           <InputNumber min={0} style={{ width: '100%' }} />
         </Form.Item>
         <Form.Item label="品牌Logo" name="logo">
-          <Input placeholder="请输入品牌Logo图片地址" />
+          <ImageUpload />
         </Form.Item>
         <Form.Item label="品牌大图" name="bigPic">
-          <Input placeholder="请输入品牌专区大图地址" />
+          <ImageUpload />
         </Form.Item>
         <Form.Item label="品牌故事" name="brandStory">
           <Input.TextArea rows={4} placeholder="请输入品牌故事" />

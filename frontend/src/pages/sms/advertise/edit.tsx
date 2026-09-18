@@ -14,6 +14,7 @@ import {
 import { useNavigate, useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { createAdvertise, updateAdvertise, getAdvertise } from '@/api/advertise'
+import ImageUpload from '@/components/ImageUpload'
 
 const { RangePicker } = DatePicker
 const { TextArea } = Input
@@ -99,8 +100,8 @@ export default function AdvertiseEdit() {
         <Form.Item name="sort" label="排序" rules={[{ required: true, message: '请输入排序' }]}>
           <InputNumber min={0} style={{ width: '100%' }} />
         </Form.Item>
-        <Form.Item name="pic" label="广告图片" rules={[{ required: true, message: '请输入图片地址' }]}>
-          <Input placeholder="请输入图片 URL" />
+        <Form.Item name="pic" label="广告图片" rules={[{ required: true, message: '请上传广告图片' }]}>
+          <ImageUpload />
         </Form.Item>
         <Form.Item name="url" label="链接地址">
           <Input placeholder="请输入链接地址" />

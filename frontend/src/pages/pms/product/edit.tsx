@@ -20,6 +20,7 @@ import {
 } from '@/api/product'
 import { listAllBrand, type PmsBrand } from '@/api/brand'
 import { listWithChildren, type PmsProductCategory } from '@/api/productCate'
+import ImageUpload from '@/components/ImageUpload'
 
 const steps = ['填写商品信息', '填写商品促销', '填写商品属性', '选择商品关联']
 
@@ -109,6 +110,9 @@ export default function ProductEdit() {
           </Form.Item>
           <Form.Item label="商品分类" name="productCategoryId">
             <Select placeholder="请选择商品分类" options={cateOptions} />
+          </Form.Item>
+          <Form.Item label="商品图片" name="pic">
+            <ImageUpload />
           </Form.Item>
           <Form.Item label="商品详情" name="detailHtml">
             <Input.TextArea rows={4} placeholder="请输入商品详情" />
