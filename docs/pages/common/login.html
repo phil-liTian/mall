@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - mall 电商后台管理系统</title>
+  <link rel="stylesheet" href="../../assets/antd.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #e6f4ff 0%, #f0f2f5 60%, #e6f7ff 100%);
+    }
+    .login-card {
+      width: 380px;
+      padding: 36px 36px 28px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .login-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .login-logo .mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-logo .name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .login-field { margin-bottom: 20px; }
+    .login-field .input {
+      width: 100%;
+      height: 40px;
+    }
+    .login-extra {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      user-select: none;
+      cursor: pointer;
+    }
+    .login-extra .checkbox { margin-right: 8px; }
+    .login-extra span { color: var(--text-2); }
+    .login-btn {
+      width: 100%;
+      height: 42px;
+      font-size: 15px;
+      justify-content: center;
+    }
+    .login-footer {
+      margin-top: 28px;
+      text-align: center;
+      color: var(--text-3);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="mark">M</div>
+      <div class="name">mall 电商后台管理系统</div>
+    </div>
+
+    <div class="login-field">
+      <input class="input" type="text" placeholder="请输入账号 admin">
+    </div>
+    <div class="login-field">
+      <input class="input" type="password" placeholder="请输入密码">
+    </div>
+
+    <label class="login-extra">
+      <span class="checkbox checked"></span>
+      <span>记住我</span>
+    </label>
+
+    <button class="btn btn-primary login-btn">登 录</button>
+
+    <div class="login-footer">Copyright © 2026 mall 电商后台管理系统</div>
+  </div>
+</body>
+</html>

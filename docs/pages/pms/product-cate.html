@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商品分类</title>
+<link rel="stylesheet" href="../../assets/antd.css">
+</head>
+<body>
+<div class="page">
+  <div class="page-header"><h2>商品分类</h2><div class="breadcrumb">首页 / 商品管理 / 商品分类</div></div>
+
+  <div class="card mb-0">
+    <div style="margin-bottom:16px; display:flex; gap:8px">
+      <button class="btn btn-primary">添加</button>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>分类名称</th><th>级别</th><th>商品数量</th><th>数量单位</th>
+            <th>导航栏</th><th>排序</th><th>是否显示</th><th>设置</th><th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>手机数码</td><td><span class="tag tag-blue">一级</span></td><td>1,258</td><td>件</td>
+            <td><span class="switch"></span></td><td>10</td><td><span class="switch"></span></td>
+            <td><button class="btn-link">查看下级</button><button class="btn-link">添加下级</button></td>
+            <td class="col-actions"><button class="btn-link">编辑</button><button class="btn-link danger">删除</button></td>
+          </tr>
+          <tr>
+            <td>家用电器</td><td><span class="tag tag-blue">一级</span></td><td>986</td><td>件</td>
+            <td><span class="switch"></span></td><td>9</td><td><span class="switch"></span></td>
+            <td><button class="btn-link">查看下级</button><button class="btn-link">添加下级</button></td>
+            <td class="col-actions"><button class="btn-link">编辑</button><button class="btn-link danger">删除</button></td>
+          </tr>
+          <tr>
+            <td>智能手机</td><td><span class="tag tag-green">二级</span></td><td>430</td><td>件</td>
+            <td><span class="switch off"></span></td><td>8</td><td><span class="switch"></span></td>
+            <td><button class="btn-link">查看下级</button><button class="btn-link">添加下级</button></td>
+            <td class="col-actions"><button class="btn-link">编辑</button><button class="btn-link danger">删除</button></td>
+          </tr>
+          <tr>
+            <td>服装鞋包</td><td><span class="tag tag-blue">一级</span></td><td>2,033</td><td>件</td>
+            <td><span class="switch"></span></td><td>7</td><td><span class="switch"></span></td>
+            <td><button class="btn-link">查看下级</button><button class="btn-link">添加下级</button></td>
+            <td class="col-actions"><button class="btn-link">编辑</button><button class="btn-link danger">删除</button></td>
+          </tr>
+          <tr>
+            <td>冰箱</td><td><span class="tag tag-green">二级</span></td><td>120</td><td>件</td>
+            <td><span class="switch off"></span></td><td>6</td><td><span class="switch off"></span></td>
+            <td><button class="btn-link">查看下级</button><button class="btn-link">添加下级</button></td>
+            <td class="col-actions"><button class="btn-link">编辑</button><button class="btn-link danger">删除</button></td>
+          </tr>
+          <tr>
+            <td>男装</td><td><span class="tag tag-green">二级</span></td><td>640</td><td>件</td>
+            <td><span class="switch off"></span></td><td>5</td><td><span class="switch"></span></td>
+            <td><button class="btn-link">查看下级</button><button class="btn-link">添加下级</button></td>
+            <td class="col-actions"><button class="btn-link">编辑</button><button class="btn-link danger">删除</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <span class="total">共 32 条</span>
+        <span class="page-item">上一页</span>
+        <span class="page-item active">1</span>
+        <span class="page-item">2</span>
+        <span class="page-item">3</span>
+        <span class="page-item">下一页</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

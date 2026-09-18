@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>添加商品</title>
+<link rel="stylesheet" href="../../assets/antd.css">
+</head>
+<body>
+<div class="page">
+  <div class="page-header"><h2>添加商品</h2><div class="breadcrumb">首页 / 商品管理 / 添加商品</div></div>
+
+  <div class="card">
+    <div class="steps">
+      <div class="step active"><div class="num">1</div>填写商品信息</div>
+      <div class="step"><div class="num">2</div>填写商品促销</div>
+      <div class="step"><div class="num">3</div>填写商品属性</div>
+      <div class="step"><div class="num">4</div>选择商品关联</div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-label required">所属分类</div>
+      <div class="form-control">
+        <select class="select"><option>请选择商品分类</option><option>手机数码</option><option>家用电器</option><option>服装鞋包</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label required">商品名称</div>
+      <div class="form-control"><input class="input" style="min-width:400px" placeholder="请输入商品名称"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">副标题</div>
+      <div class="form-control"><input class="input" style="min-width:400px" placeholder="请输入商品副标题"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-label required">商品品牌</div>
+      <div class="form-control">
+        <select class="select"><option>请选择商品品牌</option><option>华为</option><option>小米</option><option>苹果</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">商品介绍</div>
+      <div class="form-control"><textarea class="input" style="min-width:400px" placeholder="请输入商品介绍"></textarea></div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">商品货号</div>
+      <div class="form-control"><input class="input" placeholder="请输入商品货号"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-label required">商品售价</div>
+      <div class="form-control"><input class="input" placeholder="0.00"><div class="form-tip">单位：元</div></div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">市场价</div>
+      <div class="form-control"><input class="input" placeholder="0.00"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">商品库存</div>
+      <div class="form-control"><input class="input" placeholder="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">计量单位</div>
+      <div class="form-control"><input class="input" placeholder="如：件 / 台 / 个"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">商品重量</div>
+      <div class="form-control"><input class="input" placeholder="0"><div class="form-tip">单位：克</div></div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">排序</div>
+      <div class="form-control"><input class="input" placeholder="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">是否显示</div>
+      <div class="form-control"><span class="switch"></span></div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-label"></div>
+      <div class="form-control">
+        <button class="btn btn-primary">下一步，填写商品促销</button>
+        <button class="btn">返回</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

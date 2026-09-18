@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mall 电商后台管理系统 · 原型</title>
+<link rel="stylesheet" href="assets/antd.css">
+<style>
+  html, body { height: 100%; }
+  .app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* 侧边栏 */
+  .sider { width: 220px; background: #001529; color: rgba(255,255,255,.65); flex-shrink: 0; display: flex; flex-direction: column; transition: width .2s; }
+  .sider.collapsed { width: 64px; }
+  .logo { height: 56px; display: flex; align-items: center; gap: 10px; padding: 0 20px; color: #fff; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; }
+  .logo .mark { width: 28px; height: 28px; border-radius: 6px; background: var(--primary); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .menu { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .menu::-webkit-scrollbar { width: 6px; } .menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius:3px; }
+  .menu-group > .menu-title { display: flex; align-items: center; gap: 10px; padding: 0 20px; height: 44px; cursor: pointer; white-space: nowrap; overflow: hidden; }
+  .menu-group > .menu-title:hover { color: #fff; }
+  .menu-title .icon { width: 16px; text-align: center; flex-shrink: 0; }
+  .menu-title .arrow { margin-left: auto; transition: transform .2s; font-size: 10px; }
+  .menu-group.open .menu-title .arrow { transform: rotate(90deg); }
+  .submenu { display: none; background: #000c17; }
+  .menu-group.open .submenu { display: block; }
+  .submenu a { display: block; padding: 0 20px 0 46px; height: 40px; line-height: 40px; color: rgba(255,255,255,.65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .submenu a:hover { color: #fff; }
+  .submenu a.active { color: #fff; background: var(--primary); }
+  .sider.collapsed .logo span, .sider.collapsed .menu-title span, .sider.collapsed .menu-title .arrow { display: none; }
+  .sider.collapsed .submenu { display: none !important; }
+
+  /* 主区 */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { height: 56px; background: #fff; box-shadow: 0 1px 4px rgba(0,21,41,.08); display: flex; align-items: center; padding: 0 20px; flex-shrink: 0; }
+  .topbar .collapse-btn { font-size: 18px; cursor: pointer; color: var(--text-2); padding: 8px; }
+  .topbar .crumb { margin-left: 12px; color: var(--text-2); }
+  .topbar .right { margin-left: auto; display: flex; align-items: center; gap: 20px; color: var(--text-2); }
+  .topbar .right .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; }
+  .content { flex: 1; overflow: hidden; }
+  .content iframe { width: 100%; height: 100%; border: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sider" id="sider">
+    <div class="logo"><span class="mark">M</span><span>mall 后台</span></div>
+    <nav class="menu" id="menu"></nav>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <span class="collapse-btn" onclick="toggleSider()">☰</span>
+      <span class="crumb" id="crumb">首页</span>
+      <div class="right">
+        <span>🔔</span>
+        <span>文档</span>
+        <div class="avatar">A</div>
+        <span>admin</span>
+      </div>
+    </header>
+    <div class="content"><iframe id="frame" src="pages/home.html"></iframe></div>
+  </div>
+</div>
+<script>
+const MENU = [
+  { title: '首页', icon: '🏠', page: 'pages/home.html' },
+  { title: '商品', icon: '📦', children: [
+    { title: '商品列表', page: 'pages/pms/product-list.html' },
+    { title: '添加商品', page: 'pages/pms/product-add.html' },
+    { title: '修改商品', page: 'pages/pms/product-update.html', hidden: true },
+    { title: '商品分类', page: 'pages/pms/product-cate.html' },
+    { title: '添加商品分类', page: 'pages/pms/product-cate-add.html', hidden: true },
+    { title: '修改商品分类', page: 'pages/pms/product-cate-update.html', hidden: true },
+    { title: '商品类型', page: 'pages/pms/product-attr.html' },
+    { title: '商品属性列表', page: 'pages/pms/product-attr-list.html', hidden: true },
+    { title: '添加商品属性', page: 'pages/pms/product-attr-add.html', hidden: true },
+    { title: '修改商品属性', page: 'pages/pms/product-attr-update.html', hidden: true },
+    { title: '品牌管理', page: 'pages/pms/brand.html' },
+    { title: '添加品牌', page: 'pages/pms/brand-add.html', hidden: true },
+    { title: '编辑品牌', page: 'pages/pms/brand-update.html', hidden: true },
+  ]},
+  { title: '订单', icon: '📋', children: [
+    { title: '订单列表', page: 'pages/oms/order-list.html' },
+    { title: '订单详情', page: 'pages/oms/order-detail.html', hidden: true },
+    { title: '发货列表', page: 'pages/oms/deliver-list.html', hidden: true },
+    { title: '订单设置', page: 'pages/oms/order-setting.html' },
+    { title: '退货申请处理', page: 'pages/oms/return-apply.html' },
+    { title: '退货申请详情', page: 'pages/oms/return-apply-detail.html', hidden: true },
+    { title: '退货原因设置', page: 'pages/oms/return-reason.html' },
+  ]},
+  { title: '营销', icon: '🎯', children: [
+    { title: '秒杀活动列表', page: 'pages/sms/flash.html' },
+    { title: '秒杀时间段列表', page: 'pages/sms/flash-session.html', hidden: true },
+    { title: '秒杀商品列表', page: 'pages/sms/flash-product.html', hidden: true },
+    { title: '优惠券列表', page: 'pages/sms/coupon.html' },
+    { title: '添加优惠券', page: 'pages/sms/coupon-add.html', hidden: true },
+    { title: '修改优惠券', page: 'pages/sms/coupon-update.html', hidden: true },
+    { title: '优惠券领取详情', page: 'pages/sms/coupon-history.html', hidden: true },
+    { title: '品牌推荐', page: 'pages/sms/brand.html' },
+    { title: '新品推荐', page: 'pages/sms/new.html' },
+    { title: '人气推荐', page: 'pages/sms/hot.html' },
+    { title: '专题推荐', page: 'pages/sms/subject.html' },
+    { title: '广告列表', page: 'pages/sms/advertise.html' },
+    { title: '添加广告', page: 'pages/sms/advertise-add.html', hidden: true },
+    { title: '编辑广告', page: 'pages/sms/advertise-update.html', hidden: true },
+  ]},
+  { title: '权限', icon: '🔐', children: [
+    { title: '用户列表', page: 'pages/ums/admin.html' },
+    { title: '角色列表', page: 'pages/ums/role.html' },
+    { title: '分配菜单', page: 'pages/ums/alloc-menu.html', hidden: true },
+    { title: '分配资源', page: 'pages/ums/alloc-resource.html', hidden: true },
+    { title: '菜单列表', page: 'pages/ums/menu.html' },
+    { title: '添加菜单', page: 'pages/ums/menu-add.html', hidden: true },
+    { title: '修改菜单', page: 'pages/ums/menu-update.html', hidden: true },
+    { title: '资源列表', page: 'pages/ums/resource.html' },
+    { title: '资源分类', page: 'pages/ums/resource-category.html', hidden: true },
+  ]},
+  { title: '其它', icon: '🧩', children: [
+    { title: '登录页', page: 'pages/common/login.html' },
+    { title: '404 页', page: 'pages/common/404.html' },
+  ]},
+];
+
+const frame = document.getElementById('frame');
+const crumb = document.getElementById('crumb');
+let currentPage = 'pages/home.html';
+
+function renderMenu() {
+  const menu = document.getElementById('menu');
+  menu.innerHTML = MENU.map((g, gi) => {
+    if (!g.children) {
+      return `<div class="menu-group"><div class="menu-title" onclick="go('${g.page}','${g.title}',this)"><span class="icon">${g.icon}</span><span>${g.title}</span></div></div>`;
+    }
+    const items = g.children.map(c =>
+      `<a href="#" data-page="${c.page}" onclick="go('${c.page}','${g.title} / ${c.title}',this);return false;">${c.title}${c.hidden?' <span style="opacity:.4">·隐藏</span>':''}</a>`
+    ).join('');
+    return `<div class="menu-group${gi===1?' open':''}">
+      <div class="menu-title" onclick="toggleGroup(this)"><span class="icon">${g.icon}</span><span>${g.title}</span><span class="arrow">▶</span></div>
+      <div class="submenu">${items}</div></div>`;
+  }).join('');
+}
+function toggleGroup(el){ el.parentElement.classList.toggle('open'); }
+function go(page, title, el){
+  frame.src = page; crumb.textContent = title; currentPage = page;
+  document.querySelectorAll('.submenu a').forEach(a=>a.classList.remove('active'));
+  if(el && el.tagName==='A'){ el.classList.add('active'); el.closest('.menu-group').classList.add('open'); }
+}
+function toggleSider(){ document.getElementById('sider').classList.toggle('collapsed'); }
+
+// 允许 iframe 内页面通过链接跳转别的原型页（如"添加商品"按钮）
+window.navigate = (page, title) => {
+  frame.src = page.startsWith('pages/')?page:'pages/'+page;
+  if(title) crumb.textContent = title;
+};
+renderMenu();
+</script>
+</body>
+</html>

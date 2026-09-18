@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>修改商品分类</title>
+<link rel="stylesheet" href="../../assets/antd.css">
+</head>
+<body>
+<div class="page">
+  <div class="page-header"><h2>修改商品分类</h2><div class="breadcrumb">首页 / 商品管理 / 商品分类 / 修改</div></div>
+
+  <div class="card">
+    <div class="card-title">分类信息</div>
+    <div class="form-row"><div class="form-label required">分类名称</div><div class="form-control">
+      <input class="input" value="智能手机">
+    </div></div>
+    <div class="form-row"><div class="form-label">上级分类</div><div class="form-control">
+      <select class="select"><option>手机数码</option><option>无（作为一级分类）</option><option>家用电器</option><option>服装鞋包</option></select>
+    </div></div>
+    <div class="form-row"><div class="form-label">数量单位</div><div class="form-control">
+      <input class="input" value="件">
+    </div></div>
+    <div class="form-row"><div class="form-label">排序</div><div class="form-control">
+      <input class="input" value="8"><div class="form-tip">数值越大越靠前</div>
+    </div></div>
+    <div class="form-row"><div class="form-label">是否显示在导航栏</div><div class="form-control">
+      <span class="switch off"></span>
+    </div></div>
+    <div class="form-row"><div class="form-label">是否显示</div><div class="form-control">
+      <span class="switch"></span>
+    </div></div>
+    <div class="form-row"><div class="form-label">关键字</div><div class="form-control">
+      <input class="input" value="手机,智能手机,5G">
+    </div></div>
+    <div class="form-row"><div class="form-label">分类描述</div><div class="form-control">
+      <textarea class="input" rows="4">涵盖各品牌智能手机及配件产品。</textarea>
+    </div></div>
+    <div class="form-row"><div class="form-label"></div><div class="form-control">
+      <button class="btn btn-primary">提交</button>
+      <button class="btn">返回</button>
+    </div></div>
+  </div>
+</div>
+</body>
+</html>

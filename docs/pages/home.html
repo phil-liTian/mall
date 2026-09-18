@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>首页</title>
+<link rel="stylesheet" href="../assets/antd.css">
+</head>
+<body>
+<div class="page">
+  <div class="page-header"><h2>工作台</h2><div class="breadcrumb">首页 / 概览</div></div>
+
+  <div class="stat-grid" style="margin-bottom:16px">
+    <div class="stat-card"><div class="stat-icon" style="background:#e6f4ff;color:#1890ff">🛒</div><div class="stat-meta"><div class="t">今日订单总数</div><div class="v">200</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#f6ffed;color:#52c41a">💰</div><div class="stat-meta"><div class="t">今日销售总额</div><div class="v">￥5,000.00</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fffbe6;color:#faad14">📈</div><div class="stat-meta"><div class="t">昨日销售总额</div><div class="v">￥5,000.00</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fff2f0;color:#ff4d4f">👥</div><div class="stat-meta"><div class="t">会员总数</div><div class="v">5,000</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">待处理事务</div>
+    <div class="grid-3">
+      <div class="stat-card mb-0" style="justify-content:space-between"><span>待付款订单</span><span class="text-danger">10</span></div>
+      <div class="stat-card mb-0" style="justify-content:space-between"><span>待发货订单</span><span class="text-danger">10</span></div>
+      <div class="stat-card mb-0" style="justify-content:space-between"><span>待确认收货</span><span class="text-danger">10</span></div>
+      <div class="stat-card mb-0" style="justify-content:space-between"><span>待处理退款</span><span class="text-danger">10</span></div>
+      <div class="stat-card mb-0" style="justify-content:space-between"><span>待处理退货</span><span class="text-danger">10</span></div>
+      <div class="stat-card mb-0" style="justify-content:space-between"><span>广告位即将到期</span><span class="text-danger">10</span></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">商品总览</div>
+      <div class="stat-grid">
+        <div style="text-align:center"><div class="v" style="font-size:24px;color:#ff4d4f">100</div><div class="text-muted">已下架</div></div>
+        <div style="text-align:center"><div class="v" style="font-size:24px;color:#ff4d4f">400</div><div class="text-muted">已上架</div></div>
+        <div style="text-align:center"><div class="v" style="font-size:24px;color:#ff4d4f">50</div><div class="text-muted">库存紧张</div></div>
+        <div style="text-align:center"><div class="v" style="font-size:24px;color:#ff4d4f">500</div><div class="text-muted">全部商品</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">用户总览</div>
+      <div class="stat-grid">
+        <div style="text-align:center"><div class="v" style="font-size:24px;color:#ff4d4f">100</div><div class="text-muted">今日新增</div></div>
+        <div style="text-align:center"><div class="v" style="font-size:24px;color:#ff4d4f">200</div><div class="text-muted">昨日新增</div></div>
+        <div style="text-align:center"><div class="v" style="font-size:24px;color:#ff4d4f">1000</div><div class="text-muted">本月新增</div></div>
+        <div style="text-align:center"><div class="v" style="font-size:24px;color:#ff4d4f">5000</div><div class="text-muted">会员总数</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-0">
+    <div class="card-title">订单统计（近 15 日）</div>
+    <div style="display:flex; gap:24px">
+      <div style="width:180px; flex-shrink:0">
+        <div style="margin-bottom:16px"><div class="text-muted">本月订单总数</div><div style="font-size:24px">10,000</div><div><span class="text-success">+10%</span> <span class="text-muted">同比上月</span></div></div>
+        <div><div class="text-muted">本月销售总额</div><div style="font-size:24px">￥100,000</div><div><span class="text-success">+10%</span> <span class="text-muted">同比上月</span></div></div>
+      </div>
+      <div style="flex:1; border-left:1px solid var(--split); padding-left:24px">
+        <!-- 折线图占位（原型阶段用 SVG 模拟趋势） -->
+        <svg viewBox="0 0 600 240" style="width:100%; height:240px">
+          <polyline fill="rgba(24,144,255,.12)" stroke="none" points="0,200 40,180 80,150 120,100 160,60 200,110 240,170 280,110 320,120 360,160 400,170 440,70 480,30 520,190 560,150 600,150 600,240 0,240"/>
+          <polyline fill="none" stroke="#1890ff" stroke-width="2" points="0,200 40,180 80,150 120,100 160,60 200,110 240,170 280,110 320,120 360,160 400,170 440,70 480,30 520,190 560,150 600,150"/>
+          <polyline fill="none" stroke="#52c41a" stroke-width="2" points="0,210 40,190 80,160 120,120 160,90 200,130 240,180 280,130 320,140 360,170 400,180 440,110 480,80 520,200 560,170 600,170"/>
+        </svg>
+        <div style="text-align:center; color:var(--text-3); font-size:12px"><span style="color:#1890ff">■</span> 订单数量　<span style="color:#52c41a">■</span> 订单金额</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

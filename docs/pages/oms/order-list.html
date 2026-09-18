@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>订单列表</title>
+<link rel="stylesheet" href="../../assets/antd.css">
+</head>
+<body>
+<div class="page">
+  <div class="page-header"><h2>订单列表</h2><div class="breadcrumb">首页 / 订单管理 / 订单列表</div></div>
+
+  <div class="card">
+    <div class="filter-bar">
+      <div class="filter-item"><label>订单编号</label><input class="input" placeholder="请输入订单编号"></div>
+      <div class="filter-item"><label>收货人</label><input class="input" placeholder="请输入收货人姓名"></div>
+      <div class="filter-item"><label>订单状态</label>
+        <select class="select"><option>全部</option><option>待付款</option><option>待发货</option><option>已发货</option><option>已完成</option><option>已关闭</option></select>
+      </div>
+      <div class="filter-item"><label>订单分类</label>
+        <select class="select"><option>全部</option><option>正常订单</option><option>秒杀订单</option></select>
+      </div>
+      <div class="filter-item"><label>支付方式</label>
+        <select class="select"><option>全部</option><option>支付宝</option><option>微信</option><option>银联</option></select>
+      </div>
+      <div class="filter-item"><label>订单来源</label>
+        <select class="select"><option>全部</option><option>PC订单</option><option>APP订单</option><option>小程序</option></select>
+      </div>
+      <div class="filter-item"><label>下单时间</label>
+        <input class="input" type="date"> <span class="text-muted">至</span> <input class="input" type="date">
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-primary">查询</button>
+        <button class="btn">重置</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-0">
+    <div style="margin-bottom:16px; display:flex; gap:8px">
+      <button class="btn">批量发货</button>
+      <button class="btn">批量关闭</button>
+      <button class="btn btn-danger">批量删除</button>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th><span class="checkbox"></span></th>
+            <th>订单编号</th><th>提交时间</th><th>用户账号</th><th>订单金额</th>
+            <th>支付方式</th><th>订单状态</th><th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="checkbox checked"></span></td>
+            <td>202409170001</td><td>2024-09-17 10:24:31</td><td>zhangsan</td><td>￥6,999.00</td>
+            <td>支付宝</td><td><span class="tag tag-orange">待付款</span></td>
+            <td class="col-actions"><button class="btn-link">查看详情</button><button class="btn-link">关闭订单</button><button class="btn-link">备注</button></td>
+          </tr>
+          <tr>
+            <td><span class="checkbox"></span></td>
+            <td>202409170002</td><td>2024-09-17 09:58:12</td><td>lisi</td><td>￥5,999.00</td>
+            <td>微信</td><td><span class="tag tag-blue">待发货</span></td>
+            <td class="col-actions"><button class="btn-link">查看详情</button><button class="btn-link">关闭订单</button><button class="btn-link">备注</button></td>
+          </tr>
+          <tr>
+            <td><span class="checkbox"></span></td>
+            <td>202409160015</td><td>2024-09-16 20:11:45</td><td>wangwu</td><td>￥8,999.00</td>
+            <td>银联</td><td><span class="tag tag-green">已发货</span></td>
+            <td class="col-actions"><button class="btn-link">查看详情</button><button class="btn-link">关闭订单</button><button class="btn-link">备注</button></td>
+          </tr>
+          <tr>
+            <td><span class="checkbox"></span></td>
+            <td>202409160008</td><td>2024-09-16 15:33:20</td><td>zhaoliu</td><td>￥899.00</td>
+            <td>支付宝</td><td><span class="tag tag-gray">已完成</span></td>
+            <td class="col-actions"><button class="btn-link">查看详情</button><button class="btn-link">关闭订单</button><button class="btn-link">备注</button></td>
+          </tr>
+          <tr>
+            <td><span class="checkbox"></span></td>
+            <td>202409150022</td><td>2024-09-15 11:07:58</td><td>sunqi</td><td>￥3,999.00</td>
+            <td>微信</td><td><span class="tag tag-red">已关闭</span></td>
+            <td class="col-actions"><button class="btn-link">查看详情</button><button class="btn-link">关闭订单</button><button class="btn-link">备注</button></td>
+          </tr>
+          <tr>
+            <td><span class="checkbox"></span></td>
+            <td>202409150009</td><td>2024-09-15 08:45:03</td><td>zhouba</td><td>￥3,299.00</td>
+            <td>支付宝</td><td><span class="tag tag-blue">待发货</span></td>
+            <td class="col-actions"><button class="btn-link">查看详情</button><button class="btn-link">关闭订单</button><button class="btn-link">备注</button></td>
+          </tr>
+          <tr>
+            <td><span class="checkbox"></span></td>
+            <td>202409140031</td><td>2024-09-14 19:22:41</td><td>wujiu</td><td>￥79.00</td>
+            <td>微信</td><td><span class="tag tag-green">已发货</span></td>
+            <td class="col-actions"><button class="btn-link">查看详情</button><button class="btn-link">关闭订单</button><button class="btn-link">备注</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <span class="total">共 256 条</span>
+        <span class="page-item">上一页</span>
+        <span class="page-item active">1</span>
+        <span class="page-item">2</span>
+        <span class="page-item">3</span>
+        <span class="page-item">4</span>
+        <span class="page-item">下一页</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
