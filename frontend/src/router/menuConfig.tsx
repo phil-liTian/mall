@@ -65,3 +65,15 @@ export const menuConfig: MenuItem[] = [
     ],
   },
 ]
+
+// 根据 path 找到菜单标题链，用于面包屑与标签页
+export function findLabelChain(path: string): string[] {
+  for (const top of menuConfig) {
+    if (top.key === path) return [top.label]
+    if (top.children) {
+      const child = top.children.find((c) => c.key === path)
+      if (child) return [top.label, child.label]
+    }
+  }
+  return ['首页']
+}
