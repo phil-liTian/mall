@@ -1,0 +1,1 @@
+- [容器运行时是 Colima 而非 Docker Desktop](env_container_runtime.md) — 本机 docker/docker compose 底层由 Colima 提供,配置与镜像加速改法特殊

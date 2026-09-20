@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <properties resource="generator.properties"/>
+    <context id="MySqlContext" targetRuntime="MyBatis3" defaultModelType="flat">
+        <!-- 配置SQL语句中的前置分隔符 -->
+        <property name="beginningDelimiter" value="`"/>
+        <!-- 配置SQL语句中的后置分隔符 -->
+        <property name="endingDelimiter" value="`"/>
+        <!-- 配置生成Java文件的编码 -->
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <!-- 为模型生成序列化方法 -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <!-- 为生成的Java模型创建一个toString方法 -->
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <!-- 生成mapper.xml时覆盖原文件 -->
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+        <commentGenerator type="com.phil.mall.CommentGenerator">
+            <!-- 是否阻止生成的注释 -->
+            <property name="suppressAllComments" value="true"/>
+            <!-- 是否阻止生成的注释包含时间戳 -->
+            <property name="suppressDate" value="true"/>
+            <!-- 是否添加数据库表的备注信息 -->
+            <property name="addRemarkComments" value="true"/>
+        </commentGenerator>
+        <!-- 配置MBG要连接的数据库信息 -->
+        <jdbcConnection driverClass="${jdbc.driverClass}"
+                        connectionURL="${jdbc.connectionURL}"
+                        userId="${jdbc.userId}"
+                        password="${jdbc.password}">
+            <!-- 解决mysql驱动升级到8.0后不生成指定数据库代码的问题 -->
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+        <!-- 用于控制实体类的生成 -->
+        <javaModelGenerator targetPackage="com.phil.mall.model" targetProject="mall-mbg/src/main/java"/>
+        <!-- 用于控制Mapper.xml文件的生成 -->
+        <sqlMapGenerator targetPackage="com.phil.mall.mapper" targetProject="mall-mbg/src/main/resources"/>
+        <!-- 用于控制Mapper接口的生成 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.phil.mall.mapper"
+                             targetProject="mall-mbg/src/main/java"/>
+        <!-- ponytail: 仅生成 admin 阶段所需的 31 张表（含 ums_admin_login_log 登录日志），非全表 % -->
+        <table tableName="ums_admin"/>
+        <table tableName="ums_admin_login_log"/>
+        <table tableName="ums_admin_permission_relation"/>
+        <table tableName="ums_admin_role_relation"/>
+        <table tableName="ums_member_level"/>
+        <table tableName="ums_menu"/>
+        <table tableName="ums_permission"/>
+        <table tableName="ums_resource"/>
+        <table tableName="ums_resource_category"/>
+        <table tableName="ums_role"/>
+        <table tableName="ums_role_menu_relation"/>
+        <table tableName="ums_role_permission_relation"/>
+        <table tableName="ums_role_resource_relation"/>
+        <table tableName="pms_album"/>
+        <table tableName="pms_album_pic"/>
+        <table tableName="pms_brand"/>
+        <table tableName="pms_comment"/>
+        <table tableName="pms_comment_replay"/>
+        <table tableName="pms_feight_template"/>
+        <table tableName="pms_member_price"/>
+        <table tableName="pms_product"/>
+        <table tableName="pms_product_attribute"/>
+        <table tableName="pms_product_attribute_category"/>
+        <table tableName="pms_product_attribute_value"/>
+        <table tableName="pms_product_category"/>
+        <table tableName="pms_product_category_attribute_relation"/>
+        <table tableName="pms_product_full_reduction"/>
+        <table tableName="pms_product_ladder"/>
+        <table tableName="pms_product_operate_log"/>
+        <table tableName="pms_product_vertify_record"/>
+        <table tableName="pms_sku_stock"/>
+    </context>
+</generatorConfiguration>

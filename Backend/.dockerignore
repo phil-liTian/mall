@@ -1,0 +1,8 @@
+# 减小构建上下文，避免把本地产物/IDE 文件传进镜像
+**/target/
+**/*.iml
+.idea/
+.git/
+docs/
+*.md
+docker-compose.yml

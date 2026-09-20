@@ -1,0 +1,76 @@
+# ============================================================
+# mall-admin 开发环境中间件
+# ponytail: 仅 MySQL8 + Redis7 + MinIO，不含 ES/MongoDB/RabbitMQ
+# 用法：docker compose up -d
+# ============================================================
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mall-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mall
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --default-authentication-plugin=mysql_native_password
+      - --lower_case_table_names=1
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # 容器首次启动时自动执行建表与初始数据
+      - ./sql/mall-admin.sql:/docker-entrypoint-initdb.d/mall-admin.sql:ro
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    container_name: mall-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: mall-minio
+    ports:
+      - "9100:9000"   # S3 API（宿主机 9100 -> 容器 9000，避开被 SSH 隧道占用的 9000）
+      - "9101:9001"   # 管理控制台（宿主机 9101 -> 容器 9001）
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio-data:/data
+    # ponytail: 启动时自动创建 bucket 'mall'（MinIO 新版需手动 mc mb，这里用启动脚本兜底）
+    entrypoint: sh -c "minio server /data --console-address ':9001' & sleep 5 && mc alias set local http://localhost:9000 minioadmin minioadmin && mc mb -p local/mall || true && mc anonymous set download local/mall || true && wait"
+    restart: unless-stopped
+
+  mall-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mall-admin:latest
+    container_name: mall-admin
+    ports:
+      - "8082:8082"
+    environment:
+      TZ: Asia/Shanghai
+      # 容器内用服务名互访 redis / minio（MySQL 仍连远程，走 application-dev.yml 默认值）
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      MINIO_ENDPOINT: http://minio:9000
+    depends_on:
+      - redis
+      - minio
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+  redis-data:
+  minio-data:
