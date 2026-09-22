@@ -13,7 +13,6 @@ import java.util.List;
 
 /**
  * 商品SKU库存管理Controller
- * Created by macro on 2018/4/27.
  */
 @Controller
 @Tag(name = "PmsSkuStockController", description = "sku商品库存管理")

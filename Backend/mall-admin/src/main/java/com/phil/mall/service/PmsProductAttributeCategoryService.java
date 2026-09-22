@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * 商品属性分类管理Service
- * Created by macro on 2018/4/26.
  */
 public interface PmsProductAttributeCategoryService {
     /**

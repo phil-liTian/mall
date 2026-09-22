@@ -1,6 +1,6 @@
 # mall 商城后端（admin 阶段）
 
-参考 [macrozheng/mall](https://github.com/macrozheng/mall) 实现的商城后端核心功能，第一阶段聚焦后台管理（mall-admin）。
+商城后端核心功能，第一阶段聚焦后台管理（mall-admin）。
 
 ## 技术栈
 
@@ -28,7 +28,7 @@
 
 ## 包名
 
-统一为 `com.phil.mall`（重构自参考项目的 `com.macro.mall`）。
+统一为 `com.phil.mall`。
 
 ## 快速开始
 

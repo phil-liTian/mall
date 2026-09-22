@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Upload, App } from 'antd'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons'
 import type { UploadProps } from 'antd'
+import { uploadFile } from '@/api/upload'
 
 interface ImageUploadProps {
   value?: string
@@ -9,8 +10,6 @@ interface ImageUploadProps {
 }
 
 // 图片上传：值为图片 URL 字符串，可作为 Form.Item 受控子组件。
-// mock 环境无真实上传接口，这里用本地 objectURL 模拟成功。
-// 接入真实 OSS/MinIO 时，把 doUpload 换成调用上传接口并返回图片地址即可。
 export default function ImageUpload({ value, onChange }: ImageUploadProps) {
   const { message } = App.useApp()
   const [loading, setLoading] = useState(false)
@@ -29,15 +28,18 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
     return true
   }
 
-  // ponytail: mock 上传——直接用本地 objectURL，不打后端。接后端时改这里。
-  const customRequest: UploadProps['customRequest'] = ({ file, onSuccess }) => {
+  const customRequest: UploadProps['customRequest'] = async ({ file, onSuccess, onError }) => {
     setLoading(true)
-    const url = URL.createObjectURL(file as File)
-    setTimeout(() => {
-      onChange?.(url)
+    try {
+      const res = await uploadFile(file as File)
+      onChange?.(res.url)
+      onSuccess?.(res)
+    } catch (e) {
+      message.error('上传失败')
+      onError?.(e as Error)
+    } finally {
       setLoading(false)
-      onSuccess?.(url)
-    }, 300)
+    }
   }
 
   return (

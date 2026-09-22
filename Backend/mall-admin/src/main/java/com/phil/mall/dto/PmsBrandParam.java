@@ -10,7 +10,6 @@ import javax.validation.constraints.NotEmpty;
 
 /**
  * 品牌请求参数
- * Created by macro on 2018/4/26.
  */
 @Data
 @EqualsAndHashCode

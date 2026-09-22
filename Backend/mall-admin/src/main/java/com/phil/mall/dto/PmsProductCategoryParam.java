@@ -11,7 +11,6 @@ import java.util.List;
 
 /**
  * 添加更新商品分类的参数
- * Created by macro on 2018/4/26.
  */
 @Data
 @EqualsAndHashCode

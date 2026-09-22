@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * 后台用户缓存管理Service
- * Created by macro on 2020/3/13.
  */
 public interface UmsAdminCacheService {
     /**

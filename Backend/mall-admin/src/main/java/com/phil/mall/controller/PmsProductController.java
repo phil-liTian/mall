@@ -17,7 +17,6 @@ import java.util.List;
 
 /**
  * 商品管理Controller
- * Created by macro on 2018/4/26.
  */
 @Controller
 @Tag(name = "PmsProductController", description = "商品管理")

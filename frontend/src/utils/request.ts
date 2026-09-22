@@ -6,6 +6,11 @@ import { getToken, clearToken } from '@/store/auth'
 const http = axios.create({
   baseURL: '/api',
   timeout: 10000,
+  // 后端用 @RequestParam("ids") List<Long> 接收数组，期望 ids=1&ids=2 的重复格式；
+  // axios 默认会序列化成 ids[]=1，参数名对不上导致 400。indexes:null 生成重复格式。
+  paramsSerializer: {
+    indexes: null,
+  },
 })
 
 http.interceptors.request.use((config) => {

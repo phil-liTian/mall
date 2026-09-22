@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 
 /**
  * 后台用户管理Controller
- * Created by macro on 2018/4/26.
  */
 @Controller
 @Tag(name = "UmsAdminController", description = "后台用户管理")

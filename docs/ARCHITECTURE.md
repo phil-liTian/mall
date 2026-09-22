@@ -1,8 +1,5 @@
 # mall 电商系统架构图
 
-> 参考开源项目 [macrozheng/mall](https://github.com/macrozheng/mall) 及其配套前端 mall-admin-web、mall-app-web 的实现逻辑整理。
-> 三个参考项目位于 `0resource/` 下：`mall`（后端）、`mall-admin-web`（后台管理前端）、`mall-app-web`（移动端商城前端）。
-
 ## 1. 系统总览
 
 后端为一套 Maven 聚合工程，拆分出 3 个可运行服务（admin / portal / search）+ 3 个共享库（common / mbg / security）。前端分两套：PC 后台管理（Vue3 + Element Plus）与移动端商城（uni-app + Vue3），分别对接 admin 与 portal 服务。

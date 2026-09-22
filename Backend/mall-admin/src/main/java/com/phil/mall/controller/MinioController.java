@@ -20,7 +20,6 @@ import java.util.Date;
 
 /**
  * MinIO对象存储管理Controller
- * Created by macro on 2019/12/25.
  */
 @Controller
 @Tag(name = "MinioController", description = "MinIO对象存储管理")
