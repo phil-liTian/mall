@@ -3,12 +3,12 @@ import react from '@vitejs/plugin-react'
 import { viteMockServe } from 'vite-plugin-mock'
 import path from 'node:path'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     viteMockServe({
       mockPath: 'src/mock',
-      enable: true,
+      enable: command === 'serve',
     }),
   ],
   resolve: {
@@ -20,4 +20,4 @@ export default defineConfig({
     port: 5173,
     open: true,
   },
-})
+}))

@@ -1,0 +1,57 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: mall-redis
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    networks: [mall-net]
+    mem_limit: 192m
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: mall-minio
+    env_file: .env
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    volumes:
+      - minio-data:/data
+    entrypoint: sh -c "minio server /data --console-address ':9001' & sleep 5 && mc alias set local http://localhost:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD && mc mb -p local/mall || true && mc anonymous set download local/mall || true && wait"
+    networks: [mall-net]
+    mem_limit: 320m
+    restart: unless-stopped
+
+  mall-admin:
+    image: mall-admin:1.0
+    container_name: mall-admin
+    env_file: .env
+    environment:
+      TZ: Asia/Shanghai
+      SPRING_PROFILES_ACTIVE: prod
+      JAVA_TOOL_OPTIONS: "-Xms128m -Xmx384m"
+    depends_on: [redis, minio]
+    networks: [mall-net]
+    mem_limit: 512m
+    restart: unless-stopped
+
+  nginx:
+    image: mall-frontend:1.0
+    container_name: mall-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certs:/etc/nginx/certs:ro
+    depends_on: [mall-admin, minio]
+    networks: [mall-net]
+    mem_limit: 96m
+    restart: unless-stopped
+
+networks:
+  mall-net:
+
+volumes:
+  redis-data:
+  minio-data:

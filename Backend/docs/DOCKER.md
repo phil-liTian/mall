@@ -82,3 +82,13 @@ cd mall-admin && mvn spring-boot:run
 ```
 
 访问 `http://localhost:8082/swagger-ui/index.html`。完整启动与冒烟测试见 [RUN.md](RUN.md)。
+
+
+mkdir -p /etc/docker
+cat > /etc/docker/daemon.json <<EOF
+{
+  "registry-mirrors": [
+    "https://mirrors.aliyun.com",
+  ]
+}
+EOF

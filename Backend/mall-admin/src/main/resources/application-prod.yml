@@ -1,0 +1,27 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:111.228.13.106}:${DB_PORT:3306}/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD}
+  redis:
+    host: redis
+    port: 6379
+    database: 0
+
+minio:
+  endpoint: http://minio:9000
+  publicUrl: ${MINIO_PUBLIC_URL}
+  bucketName: mall
+  accessKey: ${MINIO_ACCESS_KEY}
+  secretKey: ${MINIO_SECRET_KEY}
+
+jwt:
+  secret: ${JWT_SECRET}
+
+logging:
+  level:
+    root: info
+    com.phil.mall: info

@@ -1,0 +1,2 @@
+[registry."docker.io"]
+  mirrors = ["docker.m.daocloud.io", "docker.1ms.run", "docker.xuanyuan.me"]

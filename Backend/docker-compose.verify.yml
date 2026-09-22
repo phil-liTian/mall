@@ -1,0 +1,7 @@
+# 仅用于验证「后端能跑起来」：把 mall-admin 的 8082 映射到服务器本机回环
+# 外网访问不到（未映射公网、无需安全组），仅供服务器本机 curl localhost:8082 验证
+# 用法：docker compose -f docker-compose.prod.yml -f docker-compose.verify.yml up -d redis minio mall-admin
+services:
+  mall-admin:
+    ports:
+      - "127.0.0.1:8082:8082"

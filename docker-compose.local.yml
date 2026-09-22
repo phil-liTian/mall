@@ -1,0 +1,70 @@
+# ============================================================
+# 本地全栈环境：前端 + 后端 + Redis + MinIO 一键启动
+# MySQL 走 application-dev.yml 默认的远程库，不在本地起
+# 用法：docker compose -f docker-compose.local.yml up -d --build
+#   前端 http://localhost:8088   后端 http://localhost:8082
+# ============================================================
+version: "3"
+
+services:
+  redis:
+    image: redis:7
+    container_name: mall-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: mall-minio
+    ports:
+      - "9100:9000"   # S3 API（宿主机 9100 -> 容器 9000）
+      - "9101:9001"   # 管理控制台
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio-data:/data
+    # 启动时自动创建 bucket 'mall' 并开放匿名下载
+    entrypoint: sh -c "minio server /data --console-address ':9001' & sleep 5 && mc alias set local http://localhost:9000 minioadmin minioadmin && mc mb -p local/mall || true && mc anonymous set download local/mall || true && wait"
+    restart: unless-stopped
+
+  mall-admin:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    image: mall-admin:latest
+    container_name: mall-admin
+    ports:
+      - "8082:8082"
+    environment:
+      TZ: Asia/Shanghai
+      # 容器内用服务名互访 redis / minio；MySQL 走 dev 默认远程库
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      MINIO_ENDPOINT: http://minio:9000
+    depends_on:
+      - redis
+      - minio
+    restart: unless-stopped
+
+  mall-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NGINX_CONF: nginx.local.conf
+    image: mall-frontend:latest
+    container_name: mall-frontend
+    ports:
+      - "8088:80"   # 宿主机 8088 -> 容器 80（8080 已被占用）
+    depends_on:
+      - mall-admin
+    restart: unless-stopped
+
+volumes:
+  redis-data:
+  minio-data:

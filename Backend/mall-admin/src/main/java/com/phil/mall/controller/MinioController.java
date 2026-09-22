@@ -36,6 +36,8 @@ public class MinioController {
     private String ACCESS_KEY;
     @Value("${minio.secretKey}")
     private String SECRET_KEY;
+    @Value("${minio.publicUrl:${minio.endpoint}}")
+    private String PUBLIC_URL;
 
     @Operation(description = "文件上传")
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
@@ -74,7 +76,7 @@ public class MinioController {
             LOGGER.info("文件上传成功!");
             MinioUploadDto minioUploadDto = new MinioUploadDto();
             minioUploadDto.setName(filename);
-            minioUploadDto.setUrl(ENDPOINT + "/" + BUCKET_NAME + "/" + objectName);
+            minioUploadDto.setUrl(PUBLIC_URL + "/" + BUCKET_NAME + "/" + objectName);
             return CommonResult.success(minioUploadDto);
         } catch (Exception e) {
             e.printStackTrace();
