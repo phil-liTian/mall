@@ -1,0 +1,65 @@
+.address-manage-page {
+  min-height: 100vh;
+  background: var(--bg-color-page);
+}
+
+.am-form {
+  margin-top: 16px;
+}
+
+.am-row {
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  height: 100px;
+  background: #fff;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.am-row__tit {
+  flex-shrink: 0;
+  width: 150px;
+  font-size: 30px;
+  color: var(--text-color);
+}
+
+.am-row__input {
+  flex: 1;
+  font-size: 30px;
+  color: var(--text-color);
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.am-row__input::placeholder {
+  color: var(--text-color-placeholder);
+}
+
+.am-row--default {
+  margin-top: 16px;
+}
+
+.am-row--default .am-row__tit {
+  flex: 1;
+}
+
+/* 提交按钮 */
+.am-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 60px);
+  margin: 60px auto;
+  height: 88px;
+  font-size: 32px;
+  color: #fff;
+  background: linear-gradient(135deg, #ff6b6b 0%, #fa436a 100%);
+  border: none;
+  border-radius: 44px;
+  box-shadow: 0 4px 12px rgba(250, 67, 106, 0.4);
+}
+
+.am-submit-btn:active {
+  opacity: 0.85;
+}

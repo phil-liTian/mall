@@ -1,0 +1,128 @@
+@import './variables.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial,
+    Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+  font-size: 28px;
+  color: var(--text-color);
+  background-color: var(--bg-color-page);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+textarea {
+  font-family: inherit;
+  outline: none;
+}
+
+/* 滚动容器 */
+.page-container {
+  min-height: 100vh;
+  background-color: var(--bg-color-page);
+}
+
+/* 带底部 TabBar 的页面底部留白 */
+.has-tabbar {
+  padding-bottom: calc(var(--tabbar-height) + var(--safe-bottom));
+}
+
+/* 通用工具类 */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ellipsis-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* 价格样式 */
+.price {
+  color: var(--price-color);
+  font-weight: 600;
+}
+
+.price-symbol {
+  font-size: 24px;
+}
+
+/* 安全区适配 */
+.safe-top {
+  padding-top: var(--safe-top);
+}
+
+/* antd-mobile 主题覆盖 */
+:root:root {
+  --adm-color-primary: #fa436a;
+  --adm-color-success: #00b578;
+  --adm-color-warning: #ff8f1f;
+  --adm-color-danger: #ff3141;
+}
+
+/* 卡片通用样式 */
+.card {
+  background-color: var(--bg-color-white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}

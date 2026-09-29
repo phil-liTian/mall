@@ -1,0 +1,14 @@
+.navbar-custom {
+  --adm-color-background: #ffffff;
+  --adm-color-text: var(--text-color);
+  border-bottom: 1px solid var(--border-color-light);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: #fff;
+}
+
+.navbar-custom .adm-nav-bar-title {
+  font-size: 32px;
+  font-weight: 600;
+}

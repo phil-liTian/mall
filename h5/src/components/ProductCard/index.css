@@ -1,0 +1,74 @@
+.product-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #fff;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.product-card__img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--bg-color);
+}
+
+.product-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-card__info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.product-card__name {
+  font-size: 28px;
+  color: var(--text-color);
+  line-height: 1.4;
+  min-height: 78px;
+}
+
+.product-card__sub {
+  font-size: 24px;
+  color: var(--text-color-placeholder);
+  margin-top: 8px;
+}
+
+.product-card__bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.product-card__sale {
+  font-size: 22px;
+  color: var(--text-color-placeholder);
+}
+
+/* 列表布局 */
+.product-card--list {
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+.product-card--list .product-card__img {
+  width: 220px;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
+}
+
+.product-card--list .product-card__info {
+  flex: 1;
+}
+
+.product-card--list .product-card__name {
+  min-height: auto;
+}

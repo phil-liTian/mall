@@ -1,0 +1,210 @@
+.user-page {
+  min-height: 100vh;
+  background: var(--bg-color-page);
+  padding-bottom: 40px;
+}
+
+/* 用户头部 */
+.user-header {
+  position: relative;
+  padding: 60px 30px 0;
+  overflow: hidden;
+}
+
+.user-header__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #fa436a 0%, #ff6b6b 100%);
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  z-index: 0;
+}
+
+.user-header__info {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  padding: 20px 0 40px;
+}
+
+.user-header__avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.5);
+  margin-right: 30px;
+  background: #fff;
+}
+
+.user-header__name {
+  font-size: 36px;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* VIP 卡片 */
+.user-header__vip {
+  position: relative;
+  z-index: 1;
+}
+
+.user-header__vip-card {
+  background: linear-gradient(135deg, #3a3a3a 0%, #1f1f1f 100%);
+  border-radius: 20px 20px 0 0;
+  padding: 30px;
+  color: #f0d6a8;
+  position: relative;
+  overflow: hidden;
+}
+
+.user-header__vip-tit {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.user-header__vip-sub {
+  font-size: 24px;
+  opacity: 0.8;
+}
+
+.user-header__vip-desc {
+  font-size: 22px;
+  opacity: 0.6;
+  margin-top: 8px;
+}
+
+.user-header__vip-btn {
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  height: 56px;
+  padding: 0 28px;
+  border-radius: 50px;
+  background: #f0d6a8;
+  color: #1f1f1f;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* 积分统计 */
+.user-stats {
+  display: flex;
+  background: #fff;
+  padding: 40px 0;
+}
+
+.user-stats__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-stats__num {
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.user-stats__label {
+  font-size: 24px;
+  color: var(--text-color-placeholder);
+  margin-top: 8px;
+}
+
+/* 我的订单 */
+.user-orders {
+  margin: 20px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px;
+}
+
+.user-orders__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 30px;
+}
+
+.user-orders__more {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--text-color-placeholder);
+}
+
+.user-orders__list {
+  display: flex;
+  justify-content: space-around;
+}
+
+.user-orders__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 24px;
+  color: var(--text-color);
+}
+
+.user-orders__icon {
+  font-size: 50px;
+  margin-bottom: 12px;
+}
+
+/* 功能菜单 */
+.user-menu {
+  margin: 20px;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.user-menu__item {
+  display: flex;
+  align-items: center;
+  height: 100px;
+  padding: 0 30px;
+  border-bottom: 1px solid var(--border-color-lighter);
+}
+
+.user-menu__item.last {
+  border-bottom: none;
+}
+
+.user-menu__icon {
+  font-size: 40px;
+  width: 60px;
+}
+
+.user-menu__text {
+  flex: 1;
+  font-size: 28px;
+  color: var(--text-color);
+}
+
+.user-menu__arrow {
+  font-size: 32px;
+  color: var(--text-color-placeholder);
+}
+
+/* 退出登录 */
+.user-logout {
+  display: block;
+  width: calc(100% - 40px);
+  margin: 40px 20px;
+  height: 90px;
+  border-radius: 50px;
+  background: #fff;
+  color: var(--primary-color);
+  font-size: 30px;
+  font-weight: 500;
+  border: 1px solid var(--primary-color);
+}

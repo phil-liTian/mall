@@ -1,0 +1,27 @@
+.tab-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-color-page);
+}
+
+.tab-layout__content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.tab-layout__bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border-top: 1px solid var(--border-color-light);
+  z-index: 100;
+  padding-bottom: var(--safe-bottom);
+}
+
+/* 给内容区底部留出 TabBar 高度，避免被遮挡 */
+.tab-layout__content {
+  padding-bottom: calc(var(--tabbar-height) + var(--safe-bottom));
+}

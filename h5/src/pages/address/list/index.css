@@ -1,0 +1,93 @@
+.address-list-page {
+  min-height: 100vh;
+  background: var(--bg-color-page);
+  padding-bottom: 140px;
+}
+
+.address-list__content {
+  padding: 0;
+}
+
+/* 地址卡片 */
+.address-item {
+  display: flex;
+  align-items: center;
+  padding: 24px 30px;
+  background: #fff;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.address-item__wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.address-item__address-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.address-item__tag {
+  font-size: 22px;
+  color: #fa436a;
+  margin-right: 10px;
+  background: #fffafb;
+  border: 1px solid #ffb4c7;
+  border-radius: 4px;
+  padding: 4px 10px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.address-item__address {
+  font-size: 30px;
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+.address-item__u-box {
+  font-size: 28px;
+  color: var(--text-color-secondary);
+  margin-top: 12px;
+}
+
+.address-item__name {
+  margin-right: 30px;
+}
+
+.address-item__edit,
+.address-item__del {
+  display: flex;
+  align-items: center;
+  height: 80px;
+  font-size: 32px;
+  padding-left: 30px;
+}
+
+/* 新增按钮 */
+.address-list__add-btn {
+  position: fixed;
+  left: 30px;
+  right: 30px;
+  bottom: 30px;
+  height: 88px;
+  font-size: 32px;
+  color: #fff;
+  background: linear-gradient(135deg, #ff6b6b 0%, #fa436a 100%);
+  border: none;
+  border-radius: 44px;
+  box-shadow: 0 4px 12px rgba(250, 67, 106, 0.4);
+}
+
+.address-list__add-btn:active {
+  opacity: 0.85;
+}
+
+.address-list__empty {
+  font-size: 160px;
+  display: block;
+  margin-bottom: 20px;
+}

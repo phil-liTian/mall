@@ -1,0 +1,259 @@
+.create-order-page {
+  min-height: 100vh;
+  background: var(--bg-color-page);
+  padding-bottom: 120px;
+}
+
+.create-order__loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 0;
+  font-size: 28px;
+  color: var(--text-color-placeholder);
+}
+
+/* 收货地址 */
+.co-address {
+  position: relative;
+  margin: 20px 24px 0;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.co-address__content {
+  display: flex;
+  align-items: center;
+  padding: 30px;
+}
+
+.co-address__icon {
+  font-size: 36px;
+  margin-right: 20px;
+}
+
+.co-address__cen {
+  flex: 1;
+  min-width: 0;
+}
+
+.co-address__top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.co-address__name {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-right: 30px;
+}
+
+.co-address__mobile {
+  font-size: 28px;
+  color: var(--text-color);
+}
+
+.co-address__text {
+  font-size: 26px;
+  color: var(--text-color-secondary);
+  line-height: 1.4;
+  display: block;
+}
+
+.co-address__arrow {
+  font-size: 40px;
+  color: var(--text-color-placeholder);
+  margin-left: 20px;
+}
+
+.co-address__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 30px;
+  font-size: 30px;
+  color: var(--text-color-secondary);
+}
+
+.co-address__bg {
+  height: 6px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #fa436a 0,
+    #fa436a 20px,
+    #fff 20px,
+    #fff 40px,
+    #fa436a 40px,
+    #fa436a 60px,
+    #fff 60px,
+    #fff 80px
+  );
+}
+
+/* 商品信息 */
+.co-goods {
+  margin: 20px 24px 0;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.co-goods__header {
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--text-color);
+  padding: 24px 30px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.co-goods__item {
+  display: flex;
+  padding: 24px 30px;
+}
+
+.co-goods__item img {
+  width: 160px;
+  height: 160px;
+  border-radius: 12px;
+  margin-right: 20px;
+  object-fit: cover;
+  background: var(--bg-color-page);
+}
+
+.co-goods__right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.co-goods__title {
+  font-size: 28px;
+  color: var(--text-color);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.co-goods__spec {
+  font-size: 24px;
+  color: var(--text-color-secondary);
+  margin-bottom: 8px;
+}
+
+.co-goods__promo {
+  font-size: 22px;
+  color: #fa436a;
+  margin-bottom: 8px;
+}
+
+.co-goods__price-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.co-goods__number {
+  font-size: 26px;
+  color: var(--text-color-secondary);
+}
+
+/* 金额明细 */
+.co-list {
+  margin: 20px 24px 0;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.co-list__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 30px;
+  font-size: 28px;
+  color: var(--text-color);
+}
+
+.co-list__tit {
+  color: var(--text-color-secondary);
+}
+
+.co-list__val {
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.co-list__val.red {
+  color: #fa436a;
+}
+
+.desc-row {
+  border-top: 1px solid var(--border-color);
+}
+
+.co-list__desc {
+  flex: 1;
+  text-align: right;
+  border: none;
+  outline: none;
+  font-size: 28px;
+  color: var(--text-color);
+  background: transparent;
+}
+
+.co-list__desc::placeholder {
+  color: var(--text-color-placeholder);
+}
+
+/* 底部提交栏 */
+.co-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 110px;
+  background: #fff;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  z-index: 100;
+}
+
+.co-footer__price {
+  display: flex;
+  flex-direction: column;
+  font-size: 24px;
+  color: var(--text-color-secondary);
+}
+
+.co-footer__price .price {
+  font-size: 38px;
+  font-weight: 600;
+  color: #fa436a;
+}
+
+.co-footer__price .price-symbol {
+  font-size: 24px;
+  margin-right: 2px;
+}
+
+.co-footer__submit {
+  width: 240px;
+  height: 80px;
+  border: none;
+  border-radius: 40px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #fa436a 100%);
+  color: #fff;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.co-footer__submit:active {
+  opacity: 0.85;
+}

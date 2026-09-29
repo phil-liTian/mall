@@ -1,0 +1,88 @@
+.register-page {
+  min-height: 100vh;
+  background: #fff;
+}
+
+.register-page__wrapper {
+  padding: 40px 60px;
+}
+
+.register-page__logo {
+  font-size: 100px;
+  font-weight: 800;
+  color: var(--primary-color);
+  opacity: 0.85;
+  letter-spacing: 4px;
+}
+
+.register-page__welcome {
+  font-size: 46px;
+  color: #555;
+  margin-top: 20px;
+  margin-bottom: 70px;
+}
+
+.register-page__item {
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px 30px;
+  margin-bottom: 40px;
+}
+
+.register-page__label {
+  font-size: 26px;
+  color: var(--text-color-secondary);
+  margin-bottom: 10px;
+}
+
+.register-page__item input {
+  border: none;
+  background: transparent;
+  font-size: 32px;
+  color: var(--text-color);
+  width: 100%;
+}
+
+.register-page__code-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.register-page__code-row input {
+  flex: 1;
+}
+
+.register-page__code-btn {
+  flex-shrink: 0;
+  height: 56px;
+  padding: 0 24px;
+  margin-left: 20px;
+  font-size: 24px;
+  color: var(--primary-color);
+  background: #fff;
+  border: 1px solid var(--primary-color);
+  border-radius: 8px;
+}
+
+.register-page__code-btn:disabled {
+  color: var(--text-color-placeholder);
+  border-color: var(--text-color-placeholder);
+}
+
+.register-page__btn {
+  width: 100%;
+  height: 90px;
+  border-radius: 50px;
+  background: var(--primary-color);
+  color: #fff;
+  font-size: 32px;
+  font-weight: 500;
+  margin-top: 30px;
+}
+
+.register-page__btn:disabled {
+  opacity: 0.6;
+}

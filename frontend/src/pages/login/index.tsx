@@ -155,7 +155,7 @@ export default function LoginPage() {
               color: token.colorTextSecondary,
             }}
           >
-            演示账号：admin / macro123
+            演示账号：admin / 123456
           </div>
         </div>
       </div>

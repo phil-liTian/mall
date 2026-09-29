@@ -1,0 +1,119 @@
+.pay-page {
+  min-height: 100vh;
+  background: var(--bg-color-page);
+}
+
+/* 支付金额展示 */
+.pay-page__price-box {
+  background: #fff;
+  height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  color: var(--text-color-secondary);
+}
+
+.pay-page__label {
+  margin-bottom: 12px;
+}
+
+.pay-page__price {
+  font-size: 56px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.pay-page__price .price-symbol {
+  font-size: 36px;
+  margin-right: 4px;
+}
+
+/* 支付方式列表 */
+.pay-page__type-list {
+  margin-top: 20px;
+  background: #fff;
+}
+
+.pay-page__type-item {
+  display: flex;
+  align-items: center;
+  height: 120px;
+  padding: 0 30px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.pay-page__type-icon {
+  width: 80px;
+  font-size: 48px;
+  text-align: center;
+}
+
+.pay-page__type-con {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+.pay-page__type-tit {
+  font-size: 30px;
+  color: var(--text-color);
+  margin-bottom: 6px;
+}
+
+.pay-page__type-desc {
+  font-size: 24px;
+  color: var(--text-color-secondary);
+}
+
+/* 单选圆点 */
+.pay-page__radio {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.pay-page__radio.checked {
+  border-color: #fa436a;
+}
+
+.pay-page__radio.checked::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fa436a;
+}
+
+/* 确认支付按钮 */
+.pay-page__confirm-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 60px);
+  margin: 80px auto 30px;
+  height: 88px;
+  font-size: 32px;
+  color: #fff;
+  background: linear-gradient(135deg, #ff6b6b 0%, #fa436a 100%);
+  border: none;
+  border-radius: 44px;
+  box-shadow: 0 4px 12px rgba(250, 67, 106, 0.4);
+}
+
+.pay-page__confirm-btn:active {
+  opacity: 0.85;
+}
+
+.pay-page__confirm-btn:disabled {
+  opacity: 0.5;
+}
