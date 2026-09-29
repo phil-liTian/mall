@@ -63,3 +63,7 @@ coverage/
 .cache/
 tmp/
 temp/
+
+# ===== Docker image archives =====
+mall-images.tar.gz
+*.tar.gz

@@ -22,7 +22,7 @@ export const useLockStore = create<LockState>()(
 )
 
 // mock 环境解锁口令，与登录密码一致
-const UNLOCK_PASSWORD = 'macro123'
+const UNLOCK_PASSWORD = '123456'
 
 export default function LockScreen({ username }: { username: string }) {
   const locked = useLockStore((s) => s.locked)
@@ -72,7 +72,7 @@ export default function LockScreen({ username }: { username: string }) {
           解锁
         </Button>
       </div>
-      <div style={{ opacity: 0.4, fontSize: 12, marginTop: 12 }}>提示：解锁密码为登录密码 macro123</div>
+      <div style={{ opacity: 0.4, fontSize: 12, marginTop: 12 }}>提示：解锁密码为登录密码 123456</div>
     </div>
   )
 }

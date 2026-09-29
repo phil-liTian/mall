@@ -121,7 +121,7 @@ export default function LoginPage() {
           </p>
           <Form
             layout="vertical"
-            initialValues={{ username: 'admin', password: 'macro123' }}
+            initialValues={{ username: 'admin', password: '123456' }}
             onFinish={onFinish}
             requiredMark={false}
           >

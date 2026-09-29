@@ -23,7 +23,7 @@ export default [
     url: '/api/admin/login',
     method: 'post',
     response: ({ body }: any) => {
-      if (body?.username === 'admin' && body?.password === 'macro123') {
+      if (body?.username === 'admin' && body?.password === '123456') {
         return ok({ token: Mock.mock('@guid'), tokenHead: 'Bearer ' })
       }
       return { code: 401, message: '用户名或密码错误', data: null }
