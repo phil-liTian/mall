@@ -2,7 +2,7 @@
 # 本地全栈环境：前端 + 后端 + Redis + MinIO 一键启动
 # MySQL 走 application-dev.yml 默认的远程库，不在本地起
 # 用法：docker compose -f docker-compose.local.yml up -d --build
-#   前端 http://localhost:8088   后端 http://localhost:8082
+#   管理端 http://localhost:8088   H5 http://localhost:8089   后端 http://localhost:8082
 # ============================================================
 version: "3"
 
@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   minio:
-    image: minio/minio:latest
+    image: quay.m.daocloud.io/minio/minio:latest
     container_name: mall-minio
     ports:
       - "9100:9000"   # S3 API（宿主机 9100 -> 容器 9000）
@@ -66,6 +66,20 @@ services:
     container_name: mall-frontend
     ports:
       - "8088:80"   # 宿主机 8088 -> 容器 80（8080 已被占用）
+    depends_on:
+      - mall-admin
+    restart: unless-stopped
+
+  mall-h5:
+    build:
+      context: ./h5
+      dockerfile: Dockerfile
+      args:
+        NGINX_CONF: nginx.local.conf
+    image: mall-h5:latest
+    container_name: mall-h5
+    ports:
+      - "8089:80"   # 宿主机 8089 -> 容器 80（H5 商城）
     depends_on:
       - mall-admin
     restart: unless-stopped

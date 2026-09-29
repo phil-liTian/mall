@@ -11,10 +11,8 @@ const http = axios.create({
 })
 
 http.interceptors.request.use((config) => {
-  config.headers = {
-    'source-client': 'miniapp',
-    ...config.headers,
-  }
+  config.headers = config.headers || {}
+  config.headers['source-client'] = 'miniapp'
   const token = localStorage.getItem('mall_h5_token')
   if (token) {
     config.headers.Authorization = token

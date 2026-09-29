@@ -4,6 +4,7 @@ import './index.css'
 
 interface NavBarCustomProps extends Omit<NavBarProps, 'onBack'> {
   showBack?: boolean
+  title?: React.ReactNode
 }
 
 /** 通用顶部导航栏，统一返回逻辑 */

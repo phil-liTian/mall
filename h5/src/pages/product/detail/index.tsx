@@ -384,7 +384,7 @@ export default function ProductDetail() {
                 </div>
               </div>
             </div>
-            {specList.map((item, index) => (
+            {specList.map((item) => (
               <div key={item.id} className="detail-popup__attr">
                 <span className="detail-popup__attr-name">{item.name}</span>
                 <div className="detail-popup__item-list">

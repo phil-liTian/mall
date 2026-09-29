@@ -57,7 +57,7 @@ const homeMocks: MockMethod[] = [
   {
     url: '/api/home/recommendProductList',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const pageNum = Number(query.pageNum) || 1
       const pageSize = Number(query.pageSize) || 10
       return ok(paginate(allProducts, pageNum, pageSize))
@@ -66,7 +66,7 @@ const homeMocks: MockMethod[] = [
   {
     url: '/api/home/productCateList/:parentId',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const parentId = Number(query.parentId) || 0
       return ok(categoryList.filter((c) => c.parentId === parentId))
     },
@@ -74,7 +74,7 @@ const homeMocks: MockMethod[] = [
   {
     url: '/api/home/newProductList',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const pageNum = Number(query.pageNum) || 1
       const pageSize = Number(query.pageSize) || 10
       const list = allProducts.filter((p) => p.newStatus === 1)
@@ -84,7 +84,7 @@ const homeMocks: MockMethod[] = [
   {
     url: '/api/home/hotProductList',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const pageNum = Number(query.pageNum) || 1
       const pageSize = Number(query.pageSize) || 10
       const list = allProducts.filter((p) => p.recommandStatus === 1)
@@ -114,7 +114,7 @@ const productMocks: MockMethod[] = [
   {
     url: '/api/product/search',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const pageNum = Number(query.pageNum) || 1
       const pageSize = Number(query.pageSize) || 10
       const keyword = query.keyword as string
@@ -136,7 +136,7 @@ const productMocks: MockMethod[] = [
   {
     url: '/api/product/detail/:id',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const id = Number(query.id)
       const product = allProducts.find((p) => p.id === id)
       if (!product) return ok(null)
@@ -170,7 +170,7 @@ const cartMocks: MockMethod[] = [
   {
     url: '/api/cart/add',
     method: 'post',
-    response: ({ body }) => {
+    response: ({ body }: { body: Record<string, any> }) => {
       const list = readStore(CART_KEY, genCartItems())
       const existing = list.find((item) => item.productId === body.productId)
       if (existing) {
@@ -209,7 +209,7 @@ const cartMocks: MockMethod[] = [
   {
     url: '/api/cart/delete',
     method: 'post',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const ids = String(query.ids).split(',').filter(Boolean)
       let list = readStore(CART_KEY, genCartItems())
       list = list.filter((item) => !ids.includes(item.id))
@@ -220,7 +220,7 @@ const cartMocks: MockMethod[] = [
   {
     url: '/api/cart/update/quantity',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const id = String(query.id)
       const quantity = Number(query.quantity)
       const list = readStore(CART_KEY, genCartItems())
@@ -246,7 +246,7 @@ const orderMocks: MockMethod[] = [
   {
     url: '/api/order/generateConfirmOrder',
     method: 'post',
-    response: ({ body }) => {
+    response: ({ body }: { body: number[] }) => {
       const cartIds: number[] = body || []
       const cartList = readStore(CART_KEY, genCartItems())
       const items = cartList.filter((c) => cartIds.includes(Number(c.id)))
@@ -293,8 +293,8 @@ const orderMocks: MockMethod[] = [
   {
     url: '/api/order/generateOrder',
     method: 'post',
-    response: ({ body }) => {
-      const orders = readStore(ORDER_KEY, [])
+    response: ({ body }: { body: Record<string, any> }) => {
+      const orders = readStore(ORDER_KEY, []) as Array<any>
       const orderId = Date.now()
       const cartList = readStore(CART_KEY, genCartItems())
       const items = cartList.filter((c) => body.cartIds?.includes(Number(c.id)))
@@ -379,11 +379,11 @@ const orderMocks: MockMethod[] = [
   {
     url: '/api/order/list',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const status = query.status !== undefined ? Number(query.status) : -1
       const pageNum = Number(query.pageNum) || 1
       const pageSize = Number(query.pageSize) || 10
-      let orders = readStore(ORDER_KEY, [])
+      let orders = readStore(ORDER_KEY, []) as Array<{ id: number; status: number }>
       if (status >= 0) orders = orders.filter((o) => o.status === status)
       return ok(paginate(orders, pageNum, pageSize))
     },
@@ -391,18 +391,18 @@ const orderMocks: MockMethod[] = [
   {
     url: '/api/order/detail/:id',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const id = Number(query.id)
-      const orders = readStore(ORDER_KEY, [])
+      const orders = readStore(ORDER_KEY, []) as Array<{ id: number }>
       return ok(orders.find((o) => o.id === id) || null)
     },
   },
   {
     url: '/api/order/cancelUserOrder',
     method: 'post',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const id = Number(query.orderId)
-      const orders = readStore(ORDER_KEY, [])
+      const orders = readStore(ORDER_KEY, []) as Array<{ id: number; status: number }>
       const order = orders.find((o) => o.id === id)
       if (order) order.status = 4
       writeStore(ORDER_KEY, orders)
@@ -412,9 +412,9 @@ const orderMocks: MockMethod[] = [
   {
     url: '/api/order/confirmReceiveOrder',
     method: 'post',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const id = Number(query.orderId)
-      const orders = readStore(ORDER_KEY, [])
+      const orders = readStore(ORDER_KEY, []) as Array<{ id: number; status: number }>
       const order = orders.find((o) => o.id === id)
       if (order) order.status = 3
       writeStore(ORDER_KEY, orders)
@@ -424,9 +424,9 @@ const orderMocks: MockMethod[] = [
   {
     url: '/api/order/deleteOrder',
     method: 'post',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const id = Number(query.orderId)
-      let orders = readStore(ORDER_KEY, [])
+      let orders = readStore(ORDER_KEY, []) as Array<{ id: number }>
       orders = orders.filter((o) => o.id !== id)
       writeStore(ORDER_KEY, orders)
       return ok(null)
@@ -435,9 +435,9 @@ const orderMocks: MockMethod[] = [
   {
     url: '/api/order/paySuccess',
     method: 'post',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const id = Number(query.orderId)
-      const orders = readStore(ORDER_KEY, [])
+      const orders = readStore(ORDER_KEY, []) as Array<{ id: number; status: number; paymentTime?: string }>
       const order = orders.find((o) => o.id === id)
       if (order) {
         order.status = 1
@@ -460,7 +460,7 @@ const addressMocks: MockMethod[] = [
   {
     url: '/api/member/address/:id',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const id = Number(query.id)
       const list = readStore(ADDRESS_KEY, defaultAddressList)
       return ok(list.find((a) => a.id === id) || null)
@@ -469,9 +469,9 @@ const addressMocks: MockMethod[] = [
   {
     url: '/api/member/address/add',
     method: 'post',
-    response: ({ body }) => {
+    response: ({ body }: { body: Record<string, any> }) => {
       const list = readStore(ADDRESS_KEY, defaultAddressList)
-      const newItem = { ...body, id: Date.now() }
+      const newItem = { ...body, id: Date.now() } as typeof defaultAddressList[0]
       if (newItem.defaultStatus === 1) list.forEach((a) => (a.defaultStatus = 0))
       list.push(newItem)
       writeStore(ADDRESS_KEY, list)
@@ -481,7 +481,7 @@ const addressMocks: MockMethod[] = [
   {
     url: '/api/member/address/update/:id',
     method: 'post',
-    response: ({ query, body }) => {
+    response: ({ query, body }: { query: Record<string, string | undefined>; body: Record<string, any> }) => {
       const id = Number(query.id)
       const list = readStore(ADDRESS_KEY, defaultAddressList)
       const idx = list.findIndex((a) => a.id === id)
@@ -496,7 +496,7 @@ const addressMocks: MockMethod[] = [
   {
     url: '/api/member/address/delete/:id',
     method: 'post',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const id = Number(query.id)
       let list = readStore(ADDRESS_KEY, defaultAddressList)
       list = list.filter((a) => a.id !== id)
@@ -512,7 +512,7 @@ const memberMocks: MockMethod[] = [
   {
     url: '/api/sso/login',
     method: 'post',
-    response: ({ body }) => {
+    response: ({ body }: { body: Record<string, any> }) => {
       // 演示账号：任意非空账号密码均可登录
       if (!body.username || !body.password) {
         return { code: 401, message: '用户名或密码不能为空', data: null }
@@ -543,7 +543,7 @@ const brandMocks: MockMethod[] = [
   {
     url: '/api/brand/detail/:id',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const id = Number(query.id)
       return ok(brandList.find((b) => b.id === id) || null)
     },
@@ -551,7 +551,7 @@ const brandMocks: MockMethod[] = [
   {
     url: '/api/brand/productList',
     method: 'get',
-    response: ({ query }) => {
+    response: ({ query }: { query: Record<string, string | undefined> }) => {
       const brandId = Number(query.brandId)
       const pageNum = Number(query.pageNum) || 1
       const pageSize = Number(query.pageSize) || 10
