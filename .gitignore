@@ -66,4 +66,4 @@ temp/
 
 # ===== Docker image archives =====
 mall-images.tar.gz
-*.tar.gz
+*.tar.gzmall-images.tar.gz
