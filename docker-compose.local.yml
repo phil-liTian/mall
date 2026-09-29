@@ -42,12 +42,15 @@ services:
       - "8082:8082"
     environment:
       TZ: Asia/Shanghai
-      # 容器内用服务名互访 redis / minio；MySQL 走 dev 默认远程库
+      # 容器内用服务名互访 redis / minio；MySQL 连接凭证由 env_file 注入
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
       MINIO_ENDPOINT: http://minio:9000
       # 上传走容器内 minio:9000，返回给浏览器的 URL 用宿主机可访问地址
       MINIO_PUBLICURL: http://localhost:9100
+    # 数据库/密钥等敏感值来自 git-ignored 的 Backend/.env（不进 git）
+    env_file:
+      - Backend/.env
     depends_on:
       - redis
       - minio

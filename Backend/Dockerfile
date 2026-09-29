@@ -6,7 +6,7 @@
 # ============================================================
 
 # ---------- build stage ----------
-FROM maven:3.8-eclipse-temurin-8 AS build
+FROM docker.m.daocloud.io/library/maven:3.8-eclipse-temurin-8 AS build
 WORKDIR /build
 # 使用阿里云 Maven 镜像加速依赖下载
 COPY settings-docker.xml /root/.m2/settings.xml
@@ -22,7 +22,7 @@ COPY . .
 RUN mvn -q -B clean package -DskipTests
 
 # ---------- run stage ----------
-FROM eclipse-temurin:8-jre
+FROM docker.m.daocloud.io/library/eclipse-temurin:8-jre
 WORKDIR /app
 ENV TZ=Asia/Shanghai
 COPY --from=build /build/mall-admin/target/mall-admin-*.jar app.jar

@@ -40,10 +40,7 @@ services:
     image: mall-frontend:1.0
     container_name: mall-nginx
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./certs:/etc/nginx/certs:ro
+      - "127.0.0.1:8080:80"
     depends_on: [mall-admin, minio]
     networks: [mall-net]
     mem_limit: 96m

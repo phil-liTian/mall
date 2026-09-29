@@ -1,4 +1,4 @@
-import { createHashRouter, Navigate } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { lazy, Suspense, type ReactNode } from 'react'
 import { Spin } from 'antd'
 import Layout from '@/layout'
@@ -46,7 +46,7 @@ function RequireAuth({ children }: { children: ReactNode }) {
   return getToken() ? <>{children}</> : <Navigate to="/login" replace />
 }
 
-const router = createHashRouter([
+const router = createBrowserRouter([
   { path: '/login', element: lazyEl(<Login />) },
   {
     path: '/',
