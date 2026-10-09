@@ -156,3 +156,73 @@ docker compose down -v
 | 上传返回 `bucket does not exist` | MinIO bucket 未建 | `docker exec mall-minio mc mb -p local/mall` |
 | 404 swagger-ui | springdoc 路径 | 本项目用 `/swagger-ui/index.html`（非老的 `/swagger-ui.html`） |
 | JDK17 启动报模块限制 | 反射受限 | 加 JVM 参数 `--add-opens java.base/java.lang=ALL-UNNAMED` 等，或直接用 JDK 8/11 |
+
+---
+
+# mall-portal 启动与冒烟测试（下单最小闭环，8085）
+
+## 7.1 迁移与建表
+
+```bash
+cd /Users/litian.phil/phil/java/mall/Backend
+# 首次：执行迁移脚本（复制代码、补 model、生成 sql、注册模块）
+bash migrate-portal.sh
+# 导入 portal 建表（在 mall-admin.sql 之后）
+docker exec -i mall-mysql mysql -uroot -proot mall < sql/mall-portal.sql
+```
+
+## 7.2 编译与启动
+
+```bash
+cd /Users/litian.phil/phil/java/mall/Backend
+mvn -pl mall-portal -am clean install -DskipTests
+cd mall-portal
+java -jar target/mall-portal-1.0-SNAPSHOT.jar
+```
+
+成功标志：日志出现 `Started MallPortalApplication`，监听 `8085`。
+
+## 7.3 冒烟清单（register → login → 加购 → 下单）
+
+```bash
+# 1) 获取验证码（白名单）
+curl -s "http://localhost:8085/sso/getAuthCode?telephone=13800000000"
+
+# 2) 注册（authCode 用上一步返回值）
+curl -s -X POST "http://localhost:8085/sso/register" \
+  -d "username=member1&password=123456&telephone=13800000000&authCode=<上一步验证码>"
+
+# 3) 登录拿 token
+TOKEN=$(curl -s -X POST "http://localhost:8085/sso/login" \
+  -d "username=member1&password=123456" \
+  | python3 -c "import sys,json;print(json.load(sys.stdin)['data']['token'])")
+echo "$TOKEN"
+
+# 4) 商品搜索（白名单）
+curl -s "http://localhost:8085/product/search?keyword=&pageNum=1&pageSize=5"
+
+# 5) 加入购物车（鉴权）
+curl -s -X POST "http://localhost:8085/cart/add" \
+  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"productId":26,"productSkuId":110,"quantity":1,"price":3788.00,"productName":"华为 HUAWEI P20"}'
+
+# 6) 新增收货地址（鉴权）
+curl -s -X POST "http://localhost:8085/member/address/add" \
+  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"name":"张三","phoneNumber":"13800000000","province":"北京","city":"北京","region":"朝阳区","detailAddress":"xx路1号"}'
+
+# 7) 生成确认单 → 下单
+curl -s -X POST "http://localhost:8085/order/generateConfirmOrder" \
+  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '[<购物车id>]'
+curl -s -X POST "http://localhost:8085/order/generateOrder" \
+  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"memberReceiveAddressId":<地址id>,"cartIds":[<购物车id>],"payType":0}'
+```
+
+- [ ] 注册/登录返回 `code:200`，login 的 `data.token` 以 `Bearer ` 开头
+- [ ] 不带 token 访问 `/cart/list` 返回 401（`RestAuthenticationEntryPoint`）
+- [ ] 加购、下单返回 `code:200`；下单后购物车对应项被清除、库存被锁定
+- [ ] OpenAPI 文档 `http://localhost:8085/swagger-ui/index.html` 标题为 `mall商城前台系统`
+
+> 注：下单依赖商品与 SKU 数据（`pms_product` / `pms_sku_stock`），这些表由 `mall-admin.sql` 建立；
+> 若无演示商品数据，需先通过后台或 SQL 造数。上述 productId/skuId 需替换为库中真实存在的值。

@@ -1,0 +1,31 @@
+# ============================================================
+# mall-portal 多阶段构建（C 端商城前台，端口 8085）
+# 阶段1：用 Maven 编译打包（JDK 8）
+# 阶段2：仅拷贝 jar 到精简 JRE 运行
+# 构建：docker compose -f docker-compose.local.yml build mall-portal
+# ============================================================
+
+# ---------- build stage ----------
+FROM docker.m.daocloud.io/library/maven:3.8-eclipse-temurin-8 AS build
+WORKDIR /build
+# 使用阿里云 Maven 镜像加速依赖下载
+COPY settings-docker.xml /root/.m2/settings.xml
+# 先拷贝所有模块的 pom，利用缓存预拉依赖
+COPY pom.xml ./
+COPY mall-common/pom.xml mall-common/
+COPY mall-mbg/pom.xml mall-mbg/
+COPY mall-security/pom.xml mall-security/
+COPY mall-admin/pom.xml mall-admin/
+COPY mall-portal/pom.xml mall-portal/
+RUN mvn -q -B dependency:go-offline -DskipTests || true
+# 再拷贝源码，仅打包 mall-portal 及其依赖模块
+COPY . .
+RUN mvn -q -B clean package -pl mall-portal -am -DskipTests
+
+# ---------- run stage ----------
+FROM docker.m.daocloud.io/library/eclipse-temurin:8-jre
+WORKDIR /app
+ENV TZ=Asia/Shanghai
+COPY --from=build /build/mall-portal/target/mall-portal-*.jar app.jar
+EXPOSE 8085
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

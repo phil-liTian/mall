@@ -129,6 +129,52 @@ pnpm install
 pnpm dev                                   # 默认走 mock，无需后端
 ```
 
+## 部署到远程服务器
+
+生产环境部署到**京东云 ECS**（`root@111.228.13.106`，部署目录 `/opt/mall`，镜像 TAG `1.0`），MySQL 复用服务器已有实例（不容器化）。本机为 Apple Silicon（arm64），服务器为 amd64，因此需**交叉编译 amd64 镜像**后打包上传，由服务器 `docker load` 并用 `docker-compose.prod.yml` 启动。
+
+> 当前生产部署覆盖 `mall-admin`（后端）+ `mall-frontend`（Nginx）+ Redis + MinIO；`mall-portal` 与 `h5` 暂未纳入线上脚本。
+> 详细原理与排错见 [`docs/交叉编译与上传部署.md`](docs/交叉编译与上传部署.md) 和 [`docs/京东云部署.md`](docs/京东云部署.md)。
+
+### 前置条件（本机，一次性）
+
+1. 填好 `Backend/.env`（数据库密码、`JWT_SECRET`、MinIO 密钥等真实值；参考 `Backend/.env.example`）。
+2. 安装并初始化 buildx（Colima 的 docker CLI 不自带 buildx，需手动装）：
+
+```bash
+mkdir -p ~/.docker/cli-plugins
+curl -fSL https://github.com/docker/buildx/releases/download/v0.19.3/buildx-v0.19.3.darwin-arm64 \
+  -o ~/.docker/cli-plugins/docker-buildx
+chmod +x ~/.docker/cli-plugins/docker-buildx
+docker run --privileged --rm tonistiigi/binfmt --install amd64   # 注册 QEMU，支持跨架构
+```
+
+> 脚本会自动创建名为 `mallbuilder` 的 `docker-container` 驱动 builder，无需手动建。
+
+### 一键发布
+
+在 `mall/` 根目录执行（二选一）：
+
+```bash
+# 全栈：前端 + 后端 + Redis + MinIO，服务器 80 端口对外
+bash deploy-fullstack.sh
+
+# 仅后端：mall-admin + Redis + MinIO（8082 仅映射到服务器回环，用于验证）
+bash deploy-backend.sh
+```
+
+脚本做的事：交叉构建 amd64 镜像 → 打包为 `mall-images.tar.gz` → `scp` 上传镜像 + `docker-compose.prod.yml` + `Backend/.env` → 服务器自动装 docker（若无）、建 2G swap 兜底 OOM、`docker load` 并 `docker compose -f docker-compose.prod.yml up -d`。
+
+### 发布后
+
+| 操作 | 命令 |
+|---|---|
+| 访问站点 | http://111.228.13.106 |
+| 看后端日志（出现 `Started MallAdminApplication` 即就绪，约 60~90s） | `ssh root@111.228.13.106 'cd /opt/mall && docker compose -f docker-compose.prod.yml logs -f mall-admin'` |
+| 查看容器状态 | `ssh root@111.228.13.106 'cd /opt/mall && docker compose -f docker-compose.prod.yml ps'` |
+
+> ⚠️ 首次部署需在京东云控制台【安全组】放行 **80** 端口（后端连 MySQL 的 **3306** 通常已放行）。
+
 ## 目录结构
 
 ```
@@ -146,5 +192,7 @@ mall/
 ├── h5/                        # React + antd-mobile 用户端商城
 │   └── src/                   # api / components / layout / mock / pages / router / store / types
 ├── docker-compose.local.yml   # 本地全栈一键启动
-└── docs/                      # 架构与接口文档
+├── deploy-fullstack.sh        # 一键发布【前端+后端】到京东云 ECS
+├── deploy-backend.sh          # 一键发布【仅后端】到京东云 ECS
+└── docs/                      # 架构与接口文档（含交叉编译与部署手册）
 ```

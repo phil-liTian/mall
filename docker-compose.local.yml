@@ -2,7 +2,8 @@
 # 本地全栈环境：前端 + 后端 + Redis + MinIO 一键启动
 # MySQL 走 application-dev.yml 默认的远程库，不在本地起
 # 用法：docker compose -f docker-compose.local.yml up -d --build
-#   管理端 http://localhost:8088   H5 http://localhost:8089   后端 http://localhost:8082
+#   管理端 http://localhost:8088   H5 http://localhost:8089
+#   后端 admin http://localhost:8082   后端 portal http://localhost:8085
 # ============================================================
 version: "3"
 
@@ -56,6 +57,26 @@ services:
       - minio
     restart: unless-stopped
 
+  mall-portal:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile.portal
+    image: mall-portal:latest
+    container_name: mall-portal
+    ports:
+      - "8085:8085"
+    environment:
+      TZ: Asia/Shanghai
+      # 容器内用服务名互访 redis；MySQL 连接凭证由 env_file 注入
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    # 数据库/密钥等敏感值来自 git-ignored 的 Backend/.env（与 mall-admin 共用）
+    env_file:
+      - Backend/.env
+    depends_on:
+      - redis
+    restart: unless-stopped
+
   mall-frontend:
     build:
       context: ./frontend
@@ -82,6 +103,7 @@ services:
       - "8089:80"   # 宿主机 8089 -> 容器 80（H5 商城）
     depends_on:
       - mall-admin
+      - mall-portal
     restart: unless-stopped
 
 volumes:

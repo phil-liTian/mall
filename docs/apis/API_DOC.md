@@ -383,6 +383,17 @@
 
 # 二、mall-portal(C 端商城，8085）
 
+> **本次 MVP 迁移范围（已迁入 Backend/mall-portal，可编译运行）**：下单闭环 + 首页/品牌浏览，含以下 8 个 Controller：
+> `UmsMemberController(/sso)`、`PmsPortalProductController(/product)`、`HomeController(/home)`、`PmsPortalBrandController(/brand)`、
+> `OmsCartItemController(/cart)`、`UmsMemberReceiveAddressController(/member/address)`、`UmsMemberCouponController(/member/coupon)`、`OmsPortalOrderController(/order)`。
+>
+> **未纳入 MVP（参考项目能力，剥离依赖后暂未迁移）**：`OmsPortalOrderReturnApplyController(/returnApply)`、`AlipayController(/alipay)`、
+> `MemberProductCollectionController`、`MemberAttentionController`、`MemberReadHistoryController`（依赖 支付宝 SDK / MongoDB，后续按需补充）。
+>
+> **MVP 与参考项目的差异**：`/order/generateOrder` 下单成功后不再发送 RabbitMQ 延迟取消消息；订单超时自动取消
+> 由 `OmsPortalOrderService.cancelTimeOutOrder()` 提供，MVP 未接入定时调度（可后续用 `@Scheduled` 兜底）。首页秒杀依赖
+> `sms_flash_promotion*` 表数据，无活动时正常返回其余板块。
+
 ### UmsMemberController — 会员登录注册
 基础路径: `/sso`
 

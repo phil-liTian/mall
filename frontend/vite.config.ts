@@ -1,3 +1,7 @@
+/*
+ * @Author: phil
+ * @Date: 2026-09-22 16:19:27
+ */
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { viteMockServe } from 'vite-plugin-mock'
