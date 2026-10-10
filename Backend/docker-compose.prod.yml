@@ -36,12 +36,39 @@ services:
     mem_limit: 512m
     restart: unless-stopped
 
+  # C 端商城后端。服务器仅 2G 内存，与 mall-admin 同时在跑，故堆上限比 admin 小一档
+  mall-portal:
+    image: mall-portal:1.0
+    container_name: mall-portal
+    env_file: .env
+    environment:
+      TZ: Asia/Shanghai
+      SPRING_PROFILES_ACTIVE: prod
+      JAVA_TOOL_OPTIONS: "-Xms128m -Xmx320m"
+    depends_on: [redis]
+    networks: [mall-net]
+    mem_limit: 448m
+    restart: unless-stopped
+
   nginx:
     image: mall-frontend:1.0
     container_name: mall-nginx
     ports:
       - "127.0.0.1:8080:80"
     depends_on: [mall-admin, minio]
+    networks: [mall-net]
+    mem_limit: 96m
+    restart: unless-stopped
+
+  # H5 用户端商城（静态站）。容器内 nginx 把 /api 反代到 mall-portal:8085。
+  # depends_on 必须含 mall-portal：nginx 启动时解析 upstream 域名，portal 容器不存在会直接启动失败。
+  # 绑 127.0.0.1:8081，由宿主机 nginx 用子域名反代（与 frontend 的 8080 并列）。
+  mall-h5:
+    image: mall-h5:1.0
+    container_name: mall-h5
+    ports:
+      - "127.0.0.1:8081:80"
+    depends_on: [mall-admin, mall-portal, minio]
     networks: [mall-net]
     mem_limit: 96m
     restart: unless-stopped

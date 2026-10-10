@@ -9,7 +9,7 @@ export default function Login() {
   const [searchParams] = useSearchParams()
   const login = useMemberStore((s) => s.login)
 
-  const [username, setUsername] = useState('mall')
+  const [username, setUsername] = useState('test')
   const [password, setPassword] = useState('123456')
   const [loading, setLoading] = useState(false)
 
@@ -69,7 +69,7 @@ export default function Login() {
         <button className="login-page__btn" disabled={loading} onClick={handleLogin}>
           {loading ? '登录中...' : '登录'}
         </button>
-        <div className="login-page__tip">演示账号：mall / 123456（任意非空也可登录）</div>
+        <div className="login-page__tip">演示账号：test / 123456（任意非空也可登录）</div>
         <div className="login-page__register">
           还没有账号?
           <span onClick={() => navigate('/register')}>马上注册</span>

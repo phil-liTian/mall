@@ -69,6 +69,8 @@ export default function Index() {
   const advertiseList = homeData?.advertiseList || []
   const brandList = homeData?.brandList || []
   const flashPromotion = homeData?.homeFlashPromotion
+  // 后端在无生效秒杀活动时会返回 homeFlashPromotion 对象但 productList 为 null，这里兜底成数组
+  const flashProductList = flashPromotion?.productList || []
   const newProductList = homeData?.newProductList || []
   const hotProductList = homeData?.hotProductList || []
 
@@ -153,7 +155,7 @@ export default function Index() {
       )}
 
       {/* 秒杀专区 */}
-      {flashPromotion && flashPromotion.productList.length > 0 && (
+      {flashPromotion && flashProductList.length > 0 && (
         <>
           <div className="home-section-header">
             <span className="home-section-header__icon">⚡</span>
@@ -168,7 +170,7 @@ export default function Index() {
             </div>
           </div>
           <div className="home-grid">
-            {flashPromotion.productList.map((item) => (
+            {flashProductList.map((item) => (
               <ProductCard key={item.id} product={item} />
             ))}
           </div>
