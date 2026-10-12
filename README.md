@@ -1,5 +1,12 @@
 # mall 电商系统
 
+线上访问地址：
+
+| 端 | 地址 |
+|---|---|
+| 后台管理系统 | http://mall.starchase.xyz |
+| H5 商城 | http://m.starchase.xyz |
+
 一套电商全栈项目，包含两大部分：
 
 - **后台管理端**：Spring Boot 后端（`mall-admin`）+ React 管理前端（`frontend`），覆盖商品（PMS）、订单（OMS）、营销（SMS）、权限（UMS）等模块。
