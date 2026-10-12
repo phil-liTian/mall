@@ -1,13 +1,21 @@
 import { useState, type MouseEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Dialog } from 'antd-mobile'
+import {
+  CloseCircleFill,
+  CloseOutline,
+  DeleteOutline,
+  LeftOutline,
+  SearchOutline,
+} from 'antd-mobile-icons'
 import { useSearchStore } from '@/store/search'
-import { NavBarCustom } from '@/components/NavBarCustom'
+import { useGoBack } from '@/hooks/useGoBack'
 import { Empty } from '@/components/Empty'
 import './index.css'
 
 export default function ProductSearch() {
   const navigate = useNavigate()
+  const goBack = useGoBack()
   const searchStore = useSearchStore()
   const [keyword, setKeyword] = useState('')
 
@@ -41,11 +49,15 @@ export default function ProductSearch() {
 
   return (
     <div className="search-page">
-      <NavBarCustom showBack={false} />
       {/* 搜索栏 */}
       <div className="search-bar">
+        <span className="search-back" onClick={goBack} role="button" aria-label="返回">
+          <LeftOutline />
+        </span>
         <div className="search-input-wrap">
-          <span className="search-icon">🔍</span>
+          <span className="search-icon">
+            <SearchOutline />
+          </span>
           <input
             className="search-input"
             type="text"
@@ -57,7 +69,7 @@ export default function ProductSearch() {
           />
           {keyword && (
             <span className="clear-btn" onClick={() => setKeyword('')}>
-              ✕
+              <CloseCircleFill />
             </span>
           )}
         </div>
@@ -72,7 +84,7 @@ export default function ProductSearch() {
           <div className="section-header">
             <span className="section-title">搜索历史</span>
             <span className="clear-icon" onClick={handleClearHistory}>
-              🗑️
+              <DeleteOutline />
             </span>
           </div>
           <div className="history-list">
@@ -84,7 +96,7 @@ export default function ProductSearch() {
               >
                 <span className="history-text">{item}</span>
                 <span className="delete-icon" onClick={(e) => handleDeleteHistory(item, e)}>
-                  ✕
+                  <CloseOutline />
                 </span>
               </div>
             ))}

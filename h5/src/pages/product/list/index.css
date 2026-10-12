@@ -18,6 +18,16 @@
   align-items: center;
 }
 
+.pl-back-btn {
+  flex: none;
+  width: 48px;
+  margin-right: 8px;
+  font-size: 56px;
+  line-height: 1;
+  text-align: left;
+  color: var(--text-color);
+}
+
 .pl-search-input {
   flex: 1;
   display: flex;

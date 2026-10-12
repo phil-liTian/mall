@@ -1,6 +1,19 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Swiper, Image, Toast } from 'antd-mobile'
+import {
+  ClockCircleFill,
+  ContentOutline,
+  CouponOutline,
+  FireFill,
+  GiftOutline,
+  HeartFill,
+  MessageOutline,
+  RightOutline,
+  SearchOutline,
+  StarOutline,
+  TruckOutline,
+} from 'antd-mobile-icons'
 import { getHomeContentAPI, getRecommendProductListAPI } from '@/api/home'
 import type { HomeContentResult } from '@/types/home'
 import type { PmsProduct, PmsBrand } from '@/types/product'
@@ -78,22 +91,19 @@ export default function Index() {
     <div className="home-page">
       {/* 顶部搜索栏 */}
       <div className="home-search" onClick={() => navigate('/product/search')}>
-        <span className="home-search__icon">🔍</span>
+        <span className="home-search__icon">
+          <SearchOutline />
+        </span>
         <span className="home-search__text">输入关键字搜索</span>
       </div>
 
       {/* 轮播图 */}
       {advertiseList.length > 0 && (
         <div className="home-carousel">
-          <Swiper
-            loop
-            autoplay
-            onIndexChange={(i) => setSwiperIndex(i)}
-            style={{ '--border-radius': '16px' }}
-          >
+          <Swiper loop autoplay onIndexChange={(i) => setSwiperIndex(i)}>
             {advertiseList.map((item) => (
               <Swiper.Item key={item.id}>
-                <Image src={item.pic} fit="cover" height="350px" width="100%" />
+                <Image src={item.pic} fit="cover" />
               </Swiper.Item>
             ))}
           </Swiper>
@@ -106,10 +116,10 @@ export default function Index() {
       {/* 功能区 */}
       <div className="home-cate">
         {[
-          { icon: '🏷️', text: '专题', path: '' },
-          { icon: '💬', text: '话题', path: '' },
-          { icon: '⭐', text: '优选', path: '' },
-          { icon: '🔥', text: '特惠', path: '/product/hot' },
+          { icon: <ContentOutline />, text: '专题', path: '' },
+          { icon: <MessageOutline />, text: '话题', path: '' },
+          { icon: <StarOutline />, text: '优选', path: '' },
+          { icon: <CouponOutline />, text: '特惠', path: '/product/hot' },
         ].map((item) => (
           <div
             key={item.text}
@@ -129,12 +139,16 @@ export default function Index() {
             className="home-section-header"
             onClick={() => Toast.show({ content: '品牌列表开发中' })}
           >
-            <span className="home-section-header__icon">🏭</span>
+            <span className="home-section-header__icon">
+              <TruckOutline />
+            </span>
             <div className="home-section-header__tit">
               <span className="home-section-header__title">品牌制造商直供</span>
               <span className="home-section-header__sub">工厂直达消费者，剔除品牌溢价</span>
             </div>
-            <span className="home-section-header__arrow">›</span>
+            <span className="home-section-header__arrow">
+              <RightOutline />
+            </span>
           </div>
           <div className="home-brand-list">
             {brandList.map((brand: PmsBrand) => (
@@ -146,8 +160,10 @@ export default function Index() {
                 <div className="home-brand-item__img">
                   <img src={brand.logo} alt={brand.name} loading="lazy" />
                 </div>
-                <span className="home-brand-item__name ellipsis">{brand.name}</span>
-                <span className="home-brand-item__count">商品数量：{brand.productCount}</span>
+                <div className="home-brand-item__meta">
+                  <span className="home-brand-item__name ellipsis">{brand.name}</span>
+                  <span className="home-brand-item__count">{brand.productCount} 件</span>
+                </div>
               </div>
             ))}
           </div>
@@ -158,7 +174,9 @@ export default function Index() {
       {flashPromotion && flashProductList.length > 0 && (
         <>
           <div className="home-section-header">
-            <span className="home-section-header__icon">⚡</span>
+            <span className="home-section-header__icon">
+              <ClockCircleFill />
+            </span>
             <div className="home-section-header__tit">
               <span className="home-section-header__title">秒杀专区</span>
               <span className="home-section-header__sub">
@@ -181,12 +199,16 @@ export default function Index() {
       {newProductList.length > 0 && (
         <>
           <div className="home-section-header" onClick={() => navigate('/product/new')}>
-            <span className="home-section-header__icon">🆕</span>
+            <span className="home-section-header__icon">
+              <GiftOutline />
+            </span>
             <div className="home-section-header__tit">
               <span className="home-section-header__title">新鲜好物</span>
               <span className="home-section-header__sub">为你寻觅世间好物</span>
             </div>
-            <span className="home-section-header__arrow">›</span>
+            <span className="home-section-header__arrow">
+              <RightOutline />
+            </span>
           </div>
           <div className="home-scroll">
             {newProductList.map((item) => (
@@ -210,12 +232,16 @@ export default function Index() {
       {hotProductList.length > 0 && (
         <>
           <div className="home-section-header" onClick={() => navigate('/product/hot')}>
-            <span className="home-section-header__icon">🔥</span>
+            <span className="home-section-header__icon">
+              <FireFill />
+            </span>
             <div className="home-section-header__tit">
               <span className="home-section-header__title">人气推荐</span>
               <span className="home-section-header__sub">大家都赞不绝口的</span>
             </div>
-            <span className="home-section-header__arrow">›</span>
+            <span className="home-section-header__arrow">
+              <RightOutline />
+            </span>
           </div>
           <div className="home-hot-list">
             {hotProductList.map((item) => (
@@ -227,7 +253,9 @@ export default function Index() {
 
       {/* 猜你喜欢 */}
       <div className="home-section-header">
-        <span className="home-section-header__icon">❤️</span>
+        <span className="home-section-header__icon">
+          <HeartFill />
+        </span>
         <div className="home-section-header__tit">
           <span className="home-section-header__title">猜你喜欢</span>
           <span className="home-section-header__sub">你喜欢的都在这里了</span>

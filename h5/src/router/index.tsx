@@ -34,26 +34,12 @@ export const AppRouter = () => {
     <BrowserRouter>
       <Suspense fallback={<Loading />}>
         <Routes>
-          {/* 带 TabBar 的主路由 */}
+          {/* 带 TabBar 的主路由，访客可浏览 */}
           <Route element={<TabLayout />}>
             <Route path="/" element={<Index />} />
             <Route path="/category" element={<Category />} />
-            <Route
-              path="/cart"
-              element={
-                <RequireAuth>
-                  <Cart />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/user"
-              element={
-                <RequireAuth>
-                  <User />
-                </RequireAuth>
-              }
-            />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/user" element={<User />} />
           </Route>
 
           {/* 不带 TabBar 的子页面 */}

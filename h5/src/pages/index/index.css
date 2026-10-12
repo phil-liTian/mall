@@ -18,14 +18,27 @@
 }
 
 .home-search__icon {
+  display: flex;
+  align-items: center;
   margin-right: 10px;
-  font-size: 28px;
+  font-size: 30px;
 }
 
 /* 轮播图 */
 .home-carousel {
   position: relative;
   margin: 0 30px;
+}
+
+/* 这两个值必须写在 CSS 里：内联 style 的 px 不走 postcss-px-to-viewport，
+   之前写成内联导致轮播图是 350 真实 px 高、圆角也比别处大一倍 */
+.home-carousel .adm-swiper {
+  --border-radius: 16px;
+}
+
+.home-carousel .adm-image {
+  --width: 100%;
+  --height: 350px;
 }
 
 .home-carousel__dots {
@@ -66,25 +79,30 @@
   height: 88px;
   border-radius: 50%;
   background: rgba(250, 67, 106, 0.1);
+  color: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 44px;
+  font-size: 42px;
   margin-bottom: 12px;
 }
 
-/* 区块标题 */
+/* 区块标题。与下方内容块共同拼成一张卡片：标题圆上两角，内容块圆下两角 */
 .home-section-header {
   display: flex;
   align-items: center;
-  padding: 24px 30px 16px;
+  padding: 24px 20px 16px;
+  margin: 20px 30px 0;
   background: #fff;
-  margin-top: 16px;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
 .home-section-header__icon {
-  font-size: 44px;
-  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  font-size: 36px;
+  color: var(--primary-color);
+  margin-right: 16px;
 }
 
 .home-section-header__tit {
@@ -106,8 +124,10 @@
 }
 
 .home-section-header__arrow {
-  font-size: 36px;
-  color: var(--text-color-placeholder);
+  display: flex;
+  align-items: center;
+  font-size: 28px;
+  color: var(--text-color-disabled);
 }
 
 .home-section-header__countdown {
@@ -115,59 +135,81 @@
   color: var(--primary-color);
 }
 
+/* 区块内容块，接在标题下方圆下两角 */
+.home-brand-list,
+.home-grid,
+.home-scroll,
+.home-hot-list {
+  margin: 0 30px;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
 /* 品牌列表 */
 .home-brand-list {
   display: flex;
   flex-wrap: wrap;
-  padding: 0 30px 30px;
+  gap: 20px;
+  padding: 0 20px 30px;
   background: #fff;
 }
 
 .home-brand-item {
-  width: 48%;
-  margin-bottom: 20px;
+  width: calc(50% - 10px);
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
-.home-brand-item:nth-child(2n + 1) {
-  margin-right: 4%;
+.home-brand-item:active {
+  background: var(--bg-color-page);
 }
 
 .home-brand-item__img {
-  width: 100%;
   height: 150px;
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--bg-color);
+  padding: 20px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* logo 原图比例不一，用 max-* 等比缩放居中，而不是拉满容器后上下留出两条空带 */
 .home-brand-item__img img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.home-brand-item__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-color-lighter);
 }
 
 .home-brand-item__name {
-  font-size: 28px;
+  flex: 1;
+  min-width: 0;
+  font-size: 26px;
   color: var(--text-color);
-  margin-top: 12px;
 }
 
 .home-brand-item__count {
-  font-size: 22px;
-  color: var(--text-color-placeholder);
-  margin-top: 4px;
+  flex-shrink: 0;
+  padding: 2px 14px;
+  border-radius: 20px;
+  background: rgba(250, 67, 106, 0.08);
+  font-size: 20px;
+  color: var(--primary-color);
 }
 
 /* 网格商品 */
 .home-grid {
   display: flex;
   flex-wrap: wrap;
-  padding: 0 22px 20px;
+  padding: 0 20px 20px;
   background: #fff;
   gap: 20px;
 }
@@ -180,7 +222,7 @@
 .home-scroll {
   display: flex;
   overflow-x: auto;
-  padding: 0 30px 30px;
+  padding: 0 20px 30px;
   background: #fff;
   -webkit-overflow-scrolling: touch;
 }
@@ -209,9 +251,15 @@
   line-height: 1.4;
 }
 
+.home-scroll__item .price {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 28px;
+}
+
 /* 人气推荐列表 */
 .home-hot-list {
-  padding: 0 30px 20px;
+  padding: 0 20px 20px;
   background: #fff;
 }
 

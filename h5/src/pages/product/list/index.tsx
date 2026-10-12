@@ -5,10 +5,12 @@ import { searchProductListAPI, getCategoryTreeAPI } from '@/api/product'
 import type { PmsProduct, CategoryTreeNode, ProductListParam } from '@/types/product'
 import { ProductCard } from '@/components/ProductCard'
 import { Empty } from '@/components/Empty'
+import { useGoBack } from '@/hooks/useGoBack'
 import './index.css'
 
 export default function ProductList() {
   const navigate = useNavigate()
+  const goBack = useGoBack()
   const [searchParams] = useSearchParams()
   const keyword = searchParams.get('keyword') || ''
   const sid = searchParams.get('sid')
@@ -121,6 +123,9 @@ export default function ProductList() {
     <div className="product-list-page">
       {/* 搜索栏 */}
       <div className="pl-search-bar">
+        <span className="pl-back-btn" onClick={goBack}>
+          ‹
+        </span>
         <div className="pl-search-input" onClick={() => navigate('/product/search')}>
           <span className="pl-search-icon">🔍</span>
           <span className="pl-search-text">{keyword || '请输入商品 如：手机'}</span>

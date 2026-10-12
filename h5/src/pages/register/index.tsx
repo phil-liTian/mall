@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { NavBar, Toast } from 'antd-mobile'
+import { Toast } from 'antd-mobile'
 import { registerAPI, getAuthCodeAPI } from '@/api/member'
+import { NavBarCustom } from '@/components/NavBarCustom'
 import type { RegisterParam } from '@/types/member'
 import './index.css'
 
@@ -76,7 +77,7 @@ export default function Register() {
 
   return (
     <div className="register-page">
-      <NavBar onBack={() => navigate(-1)}>注册账号</NavBar>
+      <NavBarCustom fallback="/login" title="注册账号" />
       <div className="register-page__wrapper">
         <div className="register-page__logo">REGISTER</div>
         <div className="register-page__welcome">注册账号！</div>

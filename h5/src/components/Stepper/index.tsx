@@ -1,4 +1,5 @@
 import { Stepper } from 'antd-mobile'
+import './index.css'
 
 interface QuantityStepperProps {
   value: number
@@ -11,18 +12,12 @@ interface QuantityStepperProps {
 export const QuantityStepper = ({ value, min = 1, max = 99, onChange }: QuantityStepperProps) => {
   return (
     <Stepper
+      className="quantity-stepper"
       value={value}
       min={min}
       max={max}
       step={1}
       onChange={(val) => onChange(val as number)}
-      style={{
-        '--border': '1px solid var(--border-color)',
-        '--border-inner': '1px solid var(--border-color)',
-        '--height': '56px',
-        '--input-width': '72px',
-        '--active-border': 'var(--primary-color)',
-      }}
     />
   )
 }

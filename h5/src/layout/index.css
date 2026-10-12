@@ -25,3 +25,24 @@
 .tab-layout__content {
   padding-bottom: calc(var(--tabbar-height) + var(--safe-bottom));
 }
+
+/* antd-mobile TabBar 默认按 375px 视口设计，这里放大到项目的 750px 设计稿比例 */
+.tab-layout__bar .adm-tab-bar-wrap {
+  height: var(--tabbar-height);
+  padding: 0 16px;
+}
+
+.tab-layout__bar .adm-tab-bar-item {
+  padding: 8px 0;
+}
+
+.tab-layout__bar .adm-tab-bar-item-icon {
+  font-size: 44px;
+  height: 44px;
+}
+
+.tab-layout__bar .adm-tab-bar-item-title {
+  font-size: 22px;
+  line-height: 1.3;
+  margin-top: 6px;
+}

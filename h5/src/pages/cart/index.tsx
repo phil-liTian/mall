@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Dialog, Toast, Checkbox } from 'antd-mobile'
 import { getCartListAPI, deleteCartAPI, updateCartQuantityAPI, clearCartAPI } from '@/api/cart'
 import type { CartItem } from '@/types/cart'
+import { useMemberStore } from '@/store/member'
 import { QuantityStepper } from '@/components/Stepper'
 import { Empty } from '@/components/Empty'
 import { formatPrice } from '@/utils/format'
@@ -10,6 +11,7 @@ import './index.css'
 
 export default function Cart() {
   const navigate = useNavigate()
+  const hasLogin = useMemberStore((s) => s.hasLogin)
   const [cartList, setCartList] = useState<CartItem[]>([])
 
   const loadData = async () => {
@@ -32,8 +34,8 @@ export default function Cart() {
   }
 
   useEffect(() => {
-    loadData()
-  }, [])
+    if (hasLogin) loadData()
+  }, [hasLogin])
 
   // 解析规格文字
   const parseSpData = (item: CartItem): string => {
@@ -120,6 +122,20 @@ export default function Cart() {
     navigate(`/order/create?cartIds=${JSON.stringify(checkedIds)}`)
   }
 
+  if (!hasLogin) {
+    return (
+      <div className="cart-empty">
+        <Empty text="登录后查看购物车" icon={<span className="cart-empty__icon">🛒</span>} />
+        <button
+          className="cart-empty__btn"
+          onClick={() => navigate(`/login?redirect=${encodeURIComponent('/cart')}`)}
+        >
+          去登录
+        </button>
+      </div>
+    )
+  }
+
   if (cartList.length === 0) {
     return (
       <div className="cart-empty">
@@ -149,7 +165,7 @@ export default function Cart() {
               <Checkbox
                 checked={item.checked}
                 onChange={() => handleCheck(item.id)}
-                style={{ '--icon-size': '40px', '--font-size': '0px' }}
+                style={{ '--icon-size': '32px', '--font-size': '0px' }}
               />
             </div>
             <div
@@ -194,7 +210,7 @@ export default function Cart() {
           <Checkbox
             checked={allChecked}
             onChange={handleCheckAll}
-            style={{ '--icon-size': '40px', '--font-size': '24px' }}
+            style={{ '--icon-size': '32px', '--font-size': '24px' }}
           >
             全选
           </Checkbox>

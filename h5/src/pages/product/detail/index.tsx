@@ -11,13 +11,16 @@ import type {
   PmsProductAttribute,
   SpecOption,
 } from '@/types/product'
+import { buildSpecState } from './spec'
 import { QuantityStepper } from '@/components/Stepper'
 import { formatPrice } from '@/utils/format'
+import { useGoBack } from '@/hooks/useGoBack'
 import './index.css'
 
 export default function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const goBack = useGoBack()
   const hasLogin = useMemberStore((s) => s.hasLogin)
 
   const [product, setProduct] = useState<PmsProduct>({} as PmsProduct)
@@ -62,59 +65,10 @@ export default function ProductDetail() {
   }
 
   const initSpecList = (data: any) => {
-    const { productAttributeList, productAttributeValueList } = data
-    const specs: PmsProductAttribute[] = []
-    const children: SpecOption[] = []
-
-    for (const item of productAttributeList || []) {
-      if (item.type === 0) {
-        specs.push(item)
-        if (item.handAddStatus === 1) {
-          const filterValueList = (productAttributeValueList || []).filter(
-            (v: any) => v.productAttributeId === item.id,
-          )
-          const inputList = filterValueList[0]?.value?.split(',') || []
-          for (const val of inputList) {
-            children.push({ pid: item.id, pname: item.name, name: val })
-          }
-        } else {
-          const inputList = item.inputList?.split(',') || []
-          for (const val of inputList) {
-            children.push({ pid: item.id, pname: item.name, name: val })
-          }
-        }
-      }
-    }
-
-    // 根据 SKU 筛选可用规格
-    const availableSpecSet = new Set<string>()
-    for (const sku of data.skuStockList || []) {
-      try {
-        const spDataArr = JSON.parse(sku.spData)
-        for (const sp of spDataArr) {
-          availableSpecSet.add(sp.value)
-        }
-      } catch (e) {
-        // ignore
-      }
-    }
-    const filteredChildren = children.filter((item) => availableSpecSet.has(item.name))
-
-    // 规格默认选中第一条
-    const selected: SpecOption[] = []
-    specs.forEach((item) => {
-      for (const cItem of filteredChildren) {
-        if (cItem.pid === item.id) {
-          cItem.selected = true
-          selected.push(cItem)
-          break
-        }
-      }
-    })
-
-    setSpecList(specs)
-    setSpecChildList(filteredChildren)
-    setSpecSelected(selected)
+    const { specList, specChildList, specSelected } = buildSpecState(data)
+    setSpecList(specList)
+    setSpecChildList(specChildList)
+    setSpecSelected(specSelected)
   }
 
   const initAttrList = (data: any) => {
@@ -132,7 +86,10 @@ export default function ProductDetail() {
     setAttrList(attrs)
   }
 
-  // 获取当前选中的 SKU
+  // 后端下单按 skuId 锁库存，没有任何 SKU 记录的商品不可售
+  const sellable = skuStockList.length > 0
+
+  // 获取当前选中的 SKU：所有规格维度都要命中才算匹配
   const getSkuStock = (): PmsSkuStock | null => {
     for (const sku of skuStockList) {
       try {
@@ -148,7 +105,7 @@ export default function ProductDetail() {
             correctCount++
           }
         }
-        if (correctCount === specSelected.length) {
+        if (correctCount === specList.length) {
           return sku
         }
       } catch (e) {
@@ -189,9 +146,13 @@ export default function ProductDetail() {
 
   const handleAddToCart = async () => {
     if (!checkLogin()) return
+    if (!sellable) {
+      Toast.show({ content: '该商品暂未配置规格，无法购买' })
+      return
+    }
     const skuStock = getSkuStock()
     if (!skuStock) {
-      Toast.show({ content: '请选择规格' })
+      Toast.show({ content: '该规格暂无库存，请重新选择' })
       return
     }
     try {
@@ -218,6 +179,10 @@ export default function ProductDetail() {
 
   const handleBuyNow = () => {
     if (!checkLogin()) return
+    if (!sellable) {
+      Toast.show({ content: '该商品暂未配置规格，无法购买' })
+      return
+    }
     const skuStock = getSkuStock()
     if (!skuStock) {
       setSpecVisible(true)
@@ -245,7 +210,7 @@ export default function ProductDetail() {
             </Swiper.Item>
           ))}
         </Swiper>
-        <div className="detail-back" onClick={() => navigate(-1)}>
+        <div className="detail-back" onClick={goBack}>
           <div className="detail-back__arrow" />
         </div>
       </div>
@@ -272,7 +237,7 @@ export default function ProductDetail() {
 
       {/* 规格参数列表 */}
       <div className="detail-list">
-        {specList.length > 0 && (
+        {specList.length > 0 && sellable && (
           <div className="detail-list__row" onClick={() => setSpecVisible(true)}>
             <span className="detail-list__tit">购买类型</span>
             <div className="detail-list__con">
@@ -374,41 +339,49 @@ export default function ProductDetail() {
                   {formatPrice(currentPrice, false)}
                 </span>
                 <span className="detail-popup__stock">库存：{product.stock}件</span>
-                <div className="detail-popup__selected">
-                  已选：
-                  {specSelected.map((sItem, sIndex) => (
-                    <span key={sIndex} className="detail-list__selected">
-                      {sItem.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-            {specList.map((item) => (
-              <div key={item.id} className="detail-popup__attr">
-                <span className="detail-popup__attr-name">{item.name}</span>
-                <div className="detail-popup__item-list">
-                  {specChildList
-                    .map((cItem, cIndex) => ({ cItem, cIndex }))
-                    .filter(({ cItem }) => cItem.pid === item.id)
-                    .map(({ cItem, cIndex }) => (
-                      <span
-                        key={cIndex}
-                        className={`detail-popup__item ${cItem.selected ? 'selected' : ''}`}
-                        onClick={() => handleSelectSpec(cIndex, item.id)}
-                      >
-                        {cItem.name}
+                {sellable && (
+                  <div className="detail-popup__selected">
+                    已选：
+                    {specSelected.map((sItem, sIndex) => (
+                      <span key={sIndex} className="detail-list__selected">
+                        {sItem.name}
                       </span>
                     ))}
-                </div>
+                  </div>
+                )}
               </div>
-            ))}
-            <div className="detail-popup__qty">
-              <span>数量</span>
-              <QuantityStepper value={quantity} onChange={setQuantity} />
             </div>
-            <button className="detail-popup__btn" onClick={handleAddToCart}>
-              完成
+            {!sellable && (
+              <div className="detail-popup__notice">该商品暂未配置规格，无法购买</div>
+            )}
+            {sellable &&
+              specList.map((item) => (
+                <div key={item.id} className="detail-popup__attr">
+                  <span className="detail-popup__attr-name">{item.name}</span>
+                  <div className="detail-popup__item-list">
+                    {specChildList
+                      .map((cItem, cIndex) => ({ cItem, cIndex }))
+                      .filter(({ cItem }) => cItem.pid === item.id)
+                      .map(({ cItem, cIndex }) => (
+                        <span
+                          key={cIndex}
+                          className={`detail-popup__item ${cItem.selected ? 'selected' : ''}`}
+                          onClick={() => handleSelectSpec(cIndex, item.id)}
+                        >
+                          {cItem.name}
+                        </span>
+                      ))}
+                  </div>
+                </div>
+              ))}
+            {sellable && (
+              <div className="detail-popup__qty">
+                <span>数量</span>
+                <QuantityStepper value={quantity} onChange={setQuantity} />
+              </div>
+            )}
+            <button className="detail-popup__btn" disabled={!sellable} onClick={handleAddToCart}>
+              {sellable ? '完成' : '暂不可售'}
             </button>
           </div>
         </div>

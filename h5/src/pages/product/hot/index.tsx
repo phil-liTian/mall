@@ -3,16 +3,16 @@
  * @Date: 2026-09-29 18:02:13
  */
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { SpinLoading } from 'antd-mobile'
 import { getHotProductListAPI } from '@/api/home'
 import type { PmsProduct } from '@/types/product'
 import { ProductCard } from '@/components/ProductCard'
 import { Empty } from '@/components/Empty'
+import { useGoBack } from '@/hooks/useGoBack'
 import './index.css'
 
 export default function HotProductList() {
-  const navigate = useNavigate()
+  const goBack = useGoBack()
   const [productList, setProductList] = useState<PmsProduct[]>([])
   const [loadingType, setLoadingType] = useState<'more' | 'loading' | 'nomore'>('more')
   const pageRef = useRef({ pageNum: 1, pageSize: 6 })
@@ -60,8 +60,11 @@ export default function HotProductList() {
 
   return (
     <div className="hot-page">
-      <div className="hot-page__banner" onClick={() => navigate(-1)}>
-        <span className="hot-page__back">‹</span>
+      {/* 返回只绑在箭头上：整条 banner 可点会让滑动、看标题都变成误触返回 */}
+      <div className="hot-page__banner">
+        <span className="hot-page__back" onClick={goBack}>
+          ‹
+        </span>
         <div className="hot-page__banner-img">🔥 人气推荐</div>
       </div>
       <div className="hot-page__tit">相关商品</div>

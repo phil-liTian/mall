@@ -6,14 +6,26 @@ import './index.css'
 export default function User() {
   const navigate = useNavigate()
   const memberInfo = useMemberStore((s) => s.memberInfo)
+  const hasLogin = useMemberStore((s) => s.hasLogin)
   const logout = useMemberStore((s) => s.logout)
+
+  const goLogin = () => navigate(`/login?redirect=${encodeURIComponent('/user')}`)
+
+  /** 需要登录的入口，访客点击先去登录 */
+  const guardedNavigate = (path: string) => {
+    if (!hasLogin) {
+      goLogin()
+      return
+    }
+    navigate(path)
+  }
 
   const handleLogout = async () => {
     const confirm = await Dialog.confirm({ content: '确定退出登录？' })
     if (confirm) {
       logout()
       Toast.show({ icon: 'success', content: '已退出登录' })
-      navigate('/login', { replace: true })
+      navigate('/', { replace: true })
     }
   }
 
@@ -38,7 +50,7 @@ export default function User() {
       {/* 用户头部信息 */}
       <div className="user-header">
         <div className="user-header__bg" />
-        <div className="user-header__info">
+        <div className="user-header__info" onClick={hasLogin ? undefined : goLogin}>
           <img
             className="user-header__avatar"
             src={
@@ -47,9 +59,16 @@ export default function User() {
             }
             alt="avatar"
           />
-          <div className="user-header__name">
-            {memberInfo?.nickname || memberInfo?.username || '游客'}
-          </div>
+          {hasLogin ? (
+            <div className="user-header__name">
+              {memberInfo?.nickname || memberInfo?.username || '用户'}
+            </div>
+          ) : (
+            <div>
+              <div className="user-header__name">登录 / 注册</div>
+              <div className="user-header__guest-tip">登录后查看订单与会员权益</div>
+            </div>
+          )}
         </div>
         <div className="user-header__vip">
           <div className="user-header__vip-card">
@@ -81,7 +100,7 @@ export default function User() {
       <div className="user-orders">
         <div
           className="user-orders__header"
-          onClick={() => navigate('/order/list?status=-1')}
+          onClick={() => guardedNavigate('/order/list?status=-1')}
         >
           <span>我的订单</span>
           <span className="user-orders__more">查看全部订单 ›</span>
@@ -91,7 +110,7 @@ export default function User() {
             <div
               key={item.text}
               className="user-orders__item"
-              onClick={() => navigate(`/order/list?status=${item.status}`)}
+              onClick={() => guardedNavigate(`/order/list?status=${item.status}`)}
             >
               <div className="user-orders__icon">{item.icon}</div>
               <span>{item.text}</span>
@@ -106,7 +125,7 @@ export default function User() {
           <div
             key={item.text}
             className={`user-menu__item ${idx === menuItems.length - 1 ? 'last' : ''}`}
-            onClick={() => item.path && navigate(item.path)}
+            onClick={() => item.path && guardedNavigate(item.path)}
           >
             <span className="user-menu__icon" style={{ color: item.color }}>
               {item.icon}
@@ -118,9 +137,15 @@ export default function User() {
       </div>
 
       {/* 退出登录 */}
-      <button className="user-logout" onClick={handleLogout}>
-        退出登录
-      </button>
+      {hasLogin ? (
+        <button className="user-logout" onClick={handleLogout}>
+          退出登录
+        </button>
+      ) : (
+        <button className="user-logout primary" onClick={goLogin}>
+          立即登录
+        </button>
+      )}
     </div>
   )
 }

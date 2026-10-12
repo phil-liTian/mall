@@ -1,0 +1,30 @@
+.quantity-stepper.adm-stepper {
+  --height: 48px;
+  --button-width: 48px;
+  --input-width: 56px;
+  --input-font-size: 26px;
+  --input-font-color: var(--text-color);
+  --input-background-color: transparent;
+  --button-background-color: transparent;
+  --button-font-size: 24px;
+  --border: 1px solid var(--border-color);
+  --border-inner: none;
+  --border-radius: 999px;
+}
+
+.quantity-stepper .adm-stepper-minus {
+  color: var(--text-color-secondary);
+}
+
+.quantity-stepper .adm-stepper-plus {
+  color: var(--primary-color);
+}
+
+.quantity-stepper .adm-stepper-minus:disabled,
+.quantity-stepper .adm-stepper-plus:disabled {
+  color: var(--text-color-disabled);
+}
+
+.quantity-stepper .adm-stepper-input input {
+  font-weight: 500;
+}

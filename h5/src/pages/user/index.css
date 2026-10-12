@@ -46,6 +46,12 @@
   font-weight: 600;
 }
 
+.user-header__guest-tip {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 10px;
+}
+
 /* VIP 卡片 */
 .user-header__vip {
   position: relative;
@@ -207,4 +213,9 @@
   font-size: 30px;
   font-weight: 500;
   border: 1px solid var(--primary-color);
+}
+
+.user-logout.primary {
+  background: var(--primary-color);
+  color: #fff;
 }
