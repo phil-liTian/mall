@@ -21,6 +21,7 @@ import {
   updateShowStatus,
   type PmsProductCategory,
 } from '@/api/productCate'
+import ImageUpload from '@/components/ImageUpload'
 
 export default function ProductCatePage() {
   const [loading, setLoading] = useState(false)
@@ -87,6 +88,21 @@ export default function ProductCatePage() {
   }
 
   const columns: ColumnsType<PmsProductCategory> = [
+    {
+      title: '图标',
+      dataIndex: 'icon',
+      width: 72,
+      render: (v?: string) =>
+        v ? (
+          <img
+            src={v}
+            alt="图标"
+            style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
+          />
+        ) : (
+          '-'
+        ),
+    },
     { title: '分类名称', dataIndex: 'name' },
     { title: '级别', dataIndex: 'level', render: (v: number) => (v === 0 ? '一级' : '二级') },
     { title: '商品数量', dataIndex: 'productCount' },
@@ -182,6 +198,9 @@ export default function ProductCatePage() {
           </Form.Item>
           <Form.Item label="数量单位" name="productUnit">
             <Input placeholder="请输入数量单位" />
+          </Form.Item>
+          <Form.Item label="分类图标" name="icon">
+            <ImageUpload />
           </Form.Item>
           <Form.Item label="排序" name="sort">
             <InputNumber min={0} style={{ width: '100%' }} />
