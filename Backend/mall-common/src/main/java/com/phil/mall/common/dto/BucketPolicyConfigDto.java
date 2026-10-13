@@ -1,4 +1,4 @@
-package com.phil.mall.dto;
+package com.phil.mall.common.dto;
 
 import lombok.Builder;
 import lombok.Data;

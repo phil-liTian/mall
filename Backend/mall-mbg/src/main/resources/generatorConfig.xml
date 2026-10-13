@@ -41,7 +41,7 @@
         <!-- 用于控制Mapper接口的生成 -->
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.phil.mall.mapper"
                              targetProject="mall-mbg/src/main/java"/>
-        <!-- ponytail: 仅生成 admin 阶段所需的 31 张表（含 ums_admin_login_log 登录日志），非全表 % -->
+        <!-- ponytail: 仅生成 admin 阶段所需的表（含 ums_admin_login_log 登录日志），非全表 % -->
         <table tableName="ums_admin"/>
         <table tableName="ums_admin_login_log"/>
         <table tableName="ums_admin_permission_relation"/>
@@ -73,5 +73,12 @@
         <table tableName="pms_product_operate_log"/>
         <table tableName="pms_product_vertify_record"/>
         <table tableName="pms_sku_stock"/>
+        <!-- ponytail: 订单管理所需的 4 张表，由 sql/mall-order.sql 建立。
+             注意本配置不含 mall-portal 阶段引入的 oms_order / oms_order_item / oms_cart_item /
+             oms_order_setting 以及 cms_* / sms_* ——那些实体是手工移植的，重跑 MBG 不会覆盖它们 -->
+        <table tableName="oms_company_address"/>
+        <table tableName="oms_order_operate_history"/>
+        <table tableName="oms_order_return_apply"/>
+        <table tableName="oms_order_return_reason"/>
     </context>
 </generatorConfiguration>

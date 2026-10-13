@@ -30,10 +30,10 @@ export default function User() {
   }
 
   const orderItems = [
-    { icon: '📋', text: '全部订单', status: -1 },
-    { icon: '💰', text: '待付款', status: 0 },
-    { icon: '📦', text: '待收货', status: 2 },
-    { icon: '↩️', text: '退款/售后', status: -1 },
+    { icon: '📋', text: '全部订单', path: '/order/list?status=-1' },
+    { icon: '💰', text: '待付款', path: '/order/list?status=0' },
+    { icon: '📦', text: '待收货', path: '/order/list?status=2' },
+    { icon: '↩️', text: '退款/售后', path: '/aftersale/list' },
   ]
 
   const menuItems = [
@@ -41,7 +41,7 @@ export default function User() {
     { icon: '📜', text: '我的足迹', color: '#e07472', path: '' },
     { icon: '⭐', text: '我的关注', color: '#5fcda2', path: '' },
     { icon: '❤️', text: '我的收藏', color: '#54b4ef', path: '' },
-    { icon: '✏️', text: '我的评价', color: '#ee883b', path: '' },
+    { icon: '✏️', text: '我的评价', color: '#ee883b', path: '/comment/my' },
     { icon: '⚙️', text: '设置', color: '#e07472', path: '' },
   ]
 
@@ -110,7 +110,7 @@ export default function User() {
             <div
               key={item.text}
               className="user-orders__item"
-              onClick={() => guardedNavigate(`/order/list?status=${item.status}`)}
+              onClick={() => guardedNavigate(item.path)}
             >
               <div className="user-orders__icon">{item.icon}</div>
               <span>{item.text}</span>

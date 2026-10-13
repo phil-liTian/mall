@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Dialog, Toast } from 'antd-mobile'
 import { generateConfirmOrderAPI, generateOrderAPI } from '@/api/order'
@@ -12,13 +12,13 @@ export default function CreateOrder() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const cartIdsParam = searchParams.get('cartIds') || '[]'
-  const cartIds: number[] = (() => {
+  const cartIds: number[] = useMemo(() => {
     try {
       return JSON.parse(cartIdsParam)
     } catch {
       return []
     }
-  })()
+  }, [cartIdsParam])
 
   const [addressList, setAddressList] = useState<MemberReceiveAddress[]>([])
   const [currentAddress, setCurrentAddress] = useState<MemberReceiveAddress | null>(null)

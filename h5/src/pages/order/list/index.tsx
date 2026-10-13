@@ -258,11 +258,6 @@ export default function OrderList() {
                 </button>
               </div>
             )}
-            {order.status === 3 && (
-              <div className="order-item__action">
-                <button className="action-btn recom">评价商品</button>
-              </div>
-            )}
           </div>
         ))}
 

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.phil.mall.portal.dao.PortalCommentDao">
+    <!-- content 是 text 列，MBG 把它放进了 ResultMapWithBLOBs，继承 BaseResultMap 会丢评价正文 -->
+    <resultMap id="commentMap" type="com.phil.mall.portal.domain.PortalComment"
+               extends="com.phil.mall.mapper.PmsCommentMapper.ResultMapWithBLOBs">
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="order_item_id" jdbcType="BIGINT" property="orderItemId"/>
+    </resultMap>
+
+    <insert id="batchInsert">
+        insert into pms_comment (product_id, member_id, order_id, order_item_id,
+                                 member_nick_name, product_name, star, member_ip,
+                                 create_time, show_status, product_attribute,
+                                 collect_couont, read_count, content, pics,
+                                 member_icon, replay_count)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.productId,jdbcType=BIGINT}, #{item.memberId,jdbcType=BIGINT}, #{item.orderId,jdbcType=BIGINT},
+            #{item.orderItemId,jdbcType=BIGINT},
+            #{item.memberNickName,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
+            #{item.star,jdbcType=INTEGER}, #{item.memberIp,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP}, #{item.showStatus,jdbcType=INTEGER},
+            #{item.productAttribute,jdbcType=VARCHAR},
+            #{item.collectCouont,jdbcType=INTEGER}, #{item.readCount,jdbcType=INTEGER},
+            #{item.content,jdbcType=LONGVARCHAR}, #{item.pics,jdbcType=VARCHAR},
+            #{item.memberIcon,jdbcType=VARCHAR}, #{item.replayCount,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <select id="listByProduct" resultMap="commentMap">
+        select *
+        from pms_comment
+        where product_id = #{productId}
+          and show_status = 1
+        <if test="onlyPic != null and onlyPic">
+            and pics is not null and pics != ''
+        </if>
+        order by create_time desc, id desc
+    </select>
+
+    <select id="getCommentStat" resultType="com.phil.mall.portal.domain.PmsCommentStat">
+        select count(*)                                                    as total,
+               ifnull(round(avg(star), 1), 0)                              as avgStar,
+               ifnull(sum(case when star &gt;= 4 then 1 else 0 end), 0)    as goodCount,
+               ifnull(sum(case when pics is not null and pics != '' then 1 else 0 end), 0) as picCount
+        from pms_comment
+        where product_id = #{productId}
+          and show_status = 1
+    </select>
+
+    <select id="listUncommentedItems" resultMap="com.phil.mall.mapper.OmsOrderItemMapper.BaseResultMap">
+        select oi.*
+        from oms_order_item oi
+                 left join pms_comment c on c.order_item_id = oi.id
+        where oi.order_id = #{orderId}
+          and c.id is null
+        order by oi.id asc
+    </select>
+
+    <select id="listMyComment" resultMap="commentMap">
+        select *
+        from pms_comment
+        where member_id = #{memberId}
+        order by create_time desc, id desc
+    </select>
+</mapper>

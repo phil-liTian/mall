@@ -1,0 +1,127 @@
+.aftersale-list-page {
+  min-height: 100vh;
+  background: var(--bg-color-page);
+}
+
+/* 顶部状态 Tab */
+.asl__navbar {
+  display: flex;
+  align-items: center;
+  height: 80px;
+  background: #fff;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.asl__nav-item {
+  flex: 1;
+  position: relative;
+  font-size: 28px;
+  color: var(--text-color-secondary);
+  text-align: center;
+}
+
+.asl__nav-item.current {
+  color: #fa436a;
+}
+
+.asl__nav-item.current::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 4px;
+  background: #fa436a;
+  border-radius: 2px;
+}
+
+.asl__content {
+  padding: 16px 0 40px;
+}
+
+.asl-item {
+  margin: 0 20px 20px;
+  padding: 0 24px;
+  background: #fff;
+  border-radius: 12px;
+}
+
+.asl-item__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  font-size: 26px;
+  color: var(--text-color-secondary);
+  border-bottom: 1px solid var(--border-color-lighter);
+}
+
+.asl-item__state {
+  color: #fa436a;
+}
+
+.asl-item__goods {
+  display: flex;
+  align-items: center;
+  padding: 24px 0;
+}
+
+.asl-item__goods img {
+  flex-shrink: 0;
+  width: 160px;
+  height: 160px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.asl-item__right {
+  flex: 1;
+  min-width: 0;
+  margin-left: 20px;
+}
+
+.asl-item__title {
+  font-size: 28px;
+  color: var(--text-color);
+}
+
+.asl-item__attr,
+.asl-item__reason {
+  margin-top: 10px;
+  font-size: 24px;
+  color: var(--text-color-secondary);
+}
+
+.asl-item__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 80px;
+  font-size: 26px;
+  color: var(--text-color-secondary);
+  border-top: 1px solid var(--border-color-lighter);
+}
+
+.asl-item__bottom .price {
+  margin-left: 10px;
+  font-size: 32px;
+  color: #fa436a;
+}
+
+.asl-item__bottom .price-symbol {
+  font-size: 24px;
+}
+
+.asl__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0;
+  font-size: 26px;
+  color: var(--text-color-placeholder);
+}
+
+.asl__empty {
+  font-size: 80px;
+}

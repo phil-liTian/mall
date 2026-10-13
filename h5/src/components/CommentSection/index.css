@@ -1,0 +1,180 @@
+.comment-section {
+  margin-top: 20px;
+  padding: 0 30px;
+  background: #fff;
+}
+
+.cs__header {
+  display: flex;
+  align-items: center;
+  min-height: 88px;
+  border-bottom: 1px solid var(--border-color-lighter);
+}
+
+.cs__tit {
+  flex: 1;
+  font-size: 30px;
+  color: var(--text-color);
+}
+
+.cs__rate {
+  font-size: 26px;
+  color: #fa436a;
+}
+
+.cs__arrow {
+  margin-left: 10px;
+  font-size: 32px;
+  color: var(--text-color-placeholder);
+}
+
+.cs__empty {
+  padding: 60px 0;
+  font-size: 26px;
+  color: var(--text-color-placeholder);
+  text-align: center;
+}
+
+.cs__more {
+  padding: 28px 0;
+  font-size: 26px;
+  color: var(--text-color-secondary);
+  text-align: center;
+}
+
+.cs__more:active {
+  opacity: 0.7;
+}
+
+/* 单条评价 */
+.cs-card {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border-color-lighter);
+}
+
+.cs-card:last-child {
+  border-bottom: none;
+}
+
+.cs-card__user {
+  display: flex;
+  align-items: center;
+}
+
+.cs-card__avatar {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.cs-card__meta {
+  flex: 1;
+  min-width: 0;
+  margin-left: 16px;
+}
+
+.cs-card__name {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 26px;
+  color: var(--text-color);
+}
+
+.cs-card__time {
+  flex-shrink: 0;
+  font-size: 24px;
+  color: var(--text-color-placeholder);
+}
+
+.cs-card__content {
+  margin-top: 16px;
+  font-size: 28px;
+  line-height: 1.6;
+  color: var(--text-color);
+}
+
+.cs-card__pics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.cs-card__pics img {
+  width: 180px;
+  height: 180px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.cs-card__spec {
+  margin-top: 16px;
+  font-size: 22px;
+  color: var(--text-color-placeholder);
+}
+
+/* 全部评价弹层 */
+.cs-popup {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+}
+
+.cs-popup__header {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 96px;
+  padding: 0 30px;
+  border-bottom: 1px solid var(--border-color-lighter);
+}
+
+.cs-popup__tit {
+  flex: 1;
+  font-size: 32px;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.cs-popup__close {
+  font-size: 32px;
+  color: var(--text-color-secondary);
+}
+
+.cs-popup__filter {
+  display: flex;
+  flex-shrink: 0;
+  gap: 20px;
+  padding: 24px 30px;
+}
+
+.cs-popup__tag {
+  padding: 8px 28px;
+  font-size: 24px;
+  color: var(--text-color-secondary);
+  background: var(--bg-color-page);
+  border-radius: 24px;
+}
+
+.cs-popup__tag.current {
+  color: #fff;
+  background: #fa436a;
+}
+
+.cs-popup__body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 30px calc(30px + var(--safe-bottom));
+}
+
+.cs-popup__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0;
+  font-size: 24px;
+  color: var(--text-color-placeholder);
+}

@@ -18,3 +18,11 @@ logging:
   level:
     root: info
     com.phil.mall: info
+
+# publicUrl 必须是浏览器可达的外网地址，与集群内的 endpoint 不同
+minio:
+  endpoint: http://minio:9000
+  publicUrl: ${MINIO_PUBLIC_URL}
+  bucketName: mall
+  accessKey: ${MINIO_ACCESS_KEY}
+  secretKey: ${MINIO_SECRET_KEY}

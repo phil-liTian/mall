@@ -1,4 +1,4 @@
-package com.phil.mall.dto;
+package com.phil.mall.common.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

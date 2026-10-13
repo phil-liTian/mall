@@ -21,8 +21,29 @@ spring:
     port: ${REDIS_PORT:6379}
     password:
     timeout: 300ms
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    virtual-host: ${RABBITMQ_VHOST:/mall}
+    username: ${RABBITMQ_USERNAME:mall}
+    password: ${RABBITMQ_PASSWORD:mall}
+    listener:
+      simple:
+        # 消费失败不重回队列，经死信进入 mall.order.cancel.dlq 留痕
+        default-requeue-rejected: false
 
 logging:
   level:
     root: info
     com.phil.mall: debug
+
+# 评价晒图 / 售后凭证图的对象存储
+# 这里填的是「宿主机直接起服务」的地址；在容器里跑时由 compose 注入
+# MINIO_ENDPOINT / MINIO_PUBLICURL 覆盖（变量名按 Spring relaxed binding 推导，
+# publicUrl -> MINIO_PUBLICURL，注意没有下划线）
+minio:
+  endpoint: http://localhost:9100
+  publicUrl: http://localhost:9100
+  bucketName: mall
+  accessKey: ${MINIO_ACCESS_KEY:minioadmin}
+  secretKey: ${MINIO_SECRET_KEY:minioadmin}

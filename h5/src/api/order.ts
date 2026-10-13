@@ -4,7 +4,6 @@ import type {
   GenerateOrderResult,
   OrderParam,
   OmsOrderDetail,
-  OmsOrderReturnApplyParam,
 } from '@/types/order'
 import type { CommonPage, PageParam } from '@/types/common'
 
@@ -51,9 +50,4 @@ export const payOrderSuccessAPI = (params: { orderId: number; payType: number })
 /** 支付宝交易状态查询 */
 export const fetchAliapyStatusAPI = (params: { outTradeNo: string }) => {
   return request<string>({ method: 'GET', url: '/alipay/query', params })
-}
-
-/** 申请退货 */
-export const createReturnApplyAPI = (data: OmsOrderReturnApplyParam) => {
-  return request({ method: 'POST', url: '/returnApply/create', data })
 }

@@ -45,7 +45,7 @@ services:
       TZ: Asia/Shanghai
       SPRING_PROFILES_ACTIVE: prod
       JAVA_TOOL_OPTIONS: "-Xms128m -Xmx320m"
-    depends_on: [redis]
+    depends_on: [redis, minio]
     networks: [mall-net]
     mem_limit: 448m
     restart: unless-stopped

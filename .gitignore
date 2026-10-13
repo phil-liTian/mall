@@ -65,6 +65,9 @@ coverage/
 tmp/
 temp/
 
+# ===== Backend docs =====
+/Backend/docs/
+
 # ===== Docker image archives =====
 mall-images.tar.gz
 *.tar.gz

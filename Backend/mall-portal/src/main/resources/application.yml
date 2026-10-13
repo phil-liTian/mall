@@ -6,6 +6,14 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      # 默认 1MB，手机直出的图片普遍超过，放宽到 5MB；服务端另有同样的校验
+      max-file-size: 5MB
+      max-request-size: 10MB
 
 mybatis:
   mapper-locations:
@@ -35,6 +43,9 @@ secure:
       - /actuator/**
       - /sso/**
       - /product/**
+      # 评价只放行游客可读的两条，不能写 /comment/** —— 那样 create 也会被放行
+      - /comment/list
+      - /comment/stat/**
 
 # 自定义redis key
 redis:

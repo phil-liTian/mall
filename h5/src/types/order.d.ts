@@ -283,38 +283,84 @@ export type OmsOrderDetail = {
   orderItemList: OmsOrderItem[]
 }
 
-/** 退货申请请求参数 */
+/**
+ * 退货申请请求参数
+ * 退款金额与商品信息由服务端从订单项回填，客户端只能传下面这些字段
+ */
 export type OmsOrderReturnApplyParam = {
   /** 订单ID */
   orderId: number
+  /** 申请退货的订单项ID */
+  orderItemId: number
+  /** 原因，需匹配后端的退货原因字典 */
+  reason: string
+  /** 描述 */
+  description?: string
+  /** 凭证图片地址，最多5张 */
+  proofPics?: string[]
+  /** 退货人姓名 */
+  returnName: string
+  /** 退货人电话 */
+  returnPhone: string
+}
+
+/** 退货原因字典项 */
+export type OmsOrderReturnReason = {
+  id: number
+  /** 退货类型 */
+  name: string
+  sort: number
+  /** 状态：0->不启用；1->启用 */
+  status: number
+  createTime: string
+}
+
+/** 售后申请 */
+export type OmsOrderReturnApply = {
+  id: number
+  /** 订单ID */
+  orderId: number
+  /** 订单项ID */
+  orderItemId: number
+  /** 会员ID */
+  memberId: number
   /** 订单编号 */
   orderSn: string
+  /** 申请时间 */
+  createTime: string
   /** 会员用户名 */
   memberUsername: string
-  /** 退货商品ID */
-  productId: number
-  /** 商品名称 */
-  productName: string
+  /** 退款金额 */
+  returnAmount: number
+  /** 退货人姓名 */
+  returnName: string
+  /** 退货人电话 */
+  returnPhone: string
+  /** 申请状态：0->待处理；1->退货中；2->已完成；3->已拒绝 */
+  status: number
+  /** 处理时间 */
+  handleTime: string
   /** 商品图片 */
   productPic: string
-  /** 商品销售属性 */
-  productAttr: string
+  /** 商品名称 */
+  productName: string
   /** 商品品牌 */
   productBrand: string
+  /** 商品销售属性 JSON 字符串 */
+  productAttr: string
+  /** 退货数量 */
+  productCount: number
   /** 商品单价 */
   productPrice: number
   /** 商品实际支付单价 */
   productRealPrice: number
-  /** 退货数量 */
-  productCount: number
   /** 原因 */
   reason: string
   /** 描述 */
   description: string
   /** 凭证图片，以逗号隔开 */
   proofPics: string
-  /** 退货人姓名 */
-  returnName: string
-  /** 退货人电话 */
-  returnPhone: string
+  /** 处理备注 */
+  handleNote: string
 }
+

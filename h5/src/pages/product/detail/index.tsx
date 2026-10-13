@@ -13,6 +13,7 @@ import type {
 } from '@/types/product'
 import { buildSpecState } from './spec'
 import { QuantityStepper } from '@/components/Stepper'
+import { CommentSection } from '@/components/CommentSection'
 import { formatPrice } from '@/utils/format'
 import { useGoBack } from '@/hooks/useGoBack'
 import './index.css'
@@ -266,6 +267,9 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {/* 商品评价 */}
+      <CommentSection productId={Number(id)} />
 
       {/* 品牌信息 */}
       {brand.name && (

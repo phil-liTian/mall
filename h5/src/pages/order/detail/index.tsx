@@ -4,7 +4,7 @@ import { Dialog, Toast } from 'antd-mobile'
 import { getOrderDetailAPI, cancelUserOrderAPI, confirmReceiveOrderAPI } from '@/api/order'
 import type { OmsOrderDetail } from '@/types/order'
 import { NavBarCustom } from '@/components/NavBarCustom'
-import { formatPrice } from '@/utils/format'
+import { formatPrice, formatProductAttr } from '@/utils/format'
 import { formatDate } from '@/utils/date'
 import './index.css'
 
@@ -25,17 +25,6 @@ const formatPayType = (payType: number): string => {
     2: '微信支付',
   }
   return map[payType] || ''
-}
-
-// 解析商品销售属性
-const formatProductAttr = (jsonAttr: string): string => {
-  if (!jsonAttr) return ''
-  try {
-    const arr = JSON.parse(jsonAttr) as { key: string; value: string }[]
-    return arr.map((a) => `${a.key}:${a.value}`).join('; ')
-  } catch {
-    return jsonAttr
-  }
 }
 
 export default function OrderDetail() {
@@ -76,6 +65,14 @@ export default function OrderDetail() {
 
   const handlePayOrder = () => {
     navigate(`/money/pay?orderId=${orderId}`)
+  }
+
+  const goAftersale = () => {
+    navigate(`/aftersale/apply?orderId=${orderId}`)
+  }
+
+  const goComment = () => {
+    navigate(`/comment/create?orderId=${orderId}`)
   }
 
   const handleReceiveOrder = async () => {
@@ -231,6 +228,9 @@ export default function OrderDetail() {
           )}
           {order.status === 2 && (
             <div className="od-footer__action">
+              <button className="action-btn" onClick={goAftersale}>
+                申请售后
+              </button>
               <button className="action-btn">查看物流</button>
               <button className="action-btn recom" onClick={handleReceiveOrder}>
                 确认收货
@@ -239,8 +239,12 @@ export default function OrderDetail() {
           )}
           {order.status === 3 && (
             <div className="od-footer__action">
-              <button className="action-btn">申请售后</button>
-              <button className="action-btn recom">评价商品</button>
+              <button className="action-btn" onClick={goAftersale}>
+                申请售后
+              </button>
+              <button className="action-btn recom" onClick={goComment}>
+                评价商品
+              </button>
             </div>
           )}
           {order.status === 0 && (

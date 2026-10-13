@@ -8,6 +8,7 @@ import com.phil.mall.common.exception.Asserts;
 import com.phil.mall.common.service.RedisService;
 import com.phil.mall.mapper.*;
 import com.phil.mall.model.*;
+import com.phil.mall.portal.component.CancelOrderSender;
 import com.phil.mall.portal.dao.PortalOrderDao;
 import com.phil.mall.portal.dao.PortalOrderItemDao;
 import com.phil.mall.portal.dao.SmsCouponHistoryDao;
@@ -64,6 +65,8 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     private OmsOrderSettingMapper orderSettingMapper;
     @Autowired
     private OmsOrderItemMapper orderItemMapper;
+    @Autowired
+    private CancelOrderSender cancelOrderSender;
 
     @Override
     public ConfirmOrderResult generateConfirmOrder(List<Long> cartIds) {
@@ -349,8 +352,8 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         //获取订单超时时间
         OmsOrderSetting orderSetting = orderSettingMapper.selectByPrimaryKey(1L);
         long delayTimes = orderSetting.getNormalOrderOvertime() * 60 * 1000;
-        //发送延迟消息
-        // MVP: 已移除 RabbitMQ 延迟取消；如需超时自动取消可改用 @Scheduled 调用 cancelTimeOutOrder()
+        //发送延迟消息取消订单
+        cancelOrderSender.sendMessage(orderId, delayTimes);
     }
 
     @Override

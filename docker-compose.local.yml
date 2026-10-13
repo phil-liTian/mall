@@ -33,6 +33,20 @@ services:
     entrypoint: sh -c "minio server /data --console-address ':9001' & sleep 5 && mc alias set local http://localhost:9000 minioadmin minioadmin && mc mb -p local/mall || true && mc anonymous set download local/mall || true && wait"
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:3.9.11-management
+    container_name: mall-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # 管理界面 http://localhost:15672（mall/mall）
+    environment:
+      RABBITMQ_DEFAULT_USER: mall
+      RABBITMQ_DEFAULT_PASS: mall
+      RABBITMQ_DEFAULT_VHOST: /mall
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    restart: unless-stopped
+
   mall-admin:
     build:
       context: ./Backend
@@ -67,14 +81,20 @@ services:
       - "8085:8085"
     environment:
       TZ: Asia/Shanghai
-      # 容器内用服务名互访 redis；MySQL 连接凭证由 env_file 注入
+      # 容器内用服务名互访 redis / rabbitmq；MySQL 连接凭证由 env_file 注入
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
+      SPRING_RABBITMQ_HOST: rabbitmq
+      MINIO_ENDPOINT: http://minio:9000
+      # 上传走容器内 minio:9000，但写进数据库的 URL 要用浏览器可达的宿主机地址
+      MINIO_PUBLICURL: http://localhost:9100
     # 数据库/密钥等敏感值来自 git-ignored 的 Backend/.env（与 mall-admin 共用）
     env_file:
       - Backend/.env
     depends_on:
       - redis
+      - rabbitmq
+      - minio
     restart: unless-stopped
 
   mall-frontend:
@@ -109,3 +129,4 @@ services:
 volumes:
   redis-data:
   minio-data:
+  rabbitmq-data:

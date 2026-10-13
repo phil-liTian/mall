@@ -22,6 +22,11 @@ const AddressList = lazy(() => import('@/pages/address/list'))
 const AddressManage = lazy(() => import('@/pages/address/manage'))
 const Pay = lazy(() => import('@/pages/money/pay'))
 const PaySuccess = lazy(() => import('@/pages/money/paySuccess'))
+const AftersaleApply = lazy(() => import('@/pages/aftersale/apply'))
+const AftersaleList = lazy(() => import('@/pages/aftersale/list'))
+const AftersaleDetail = lazy(() => import('@/pages/aftersale/detail'))
+const CommentCreate = lazy(() => import('@/pages/comment/create'))
+const MyComment = lazy(() => import('@/pages/comment/my'))
 
 const Loading = () => (
   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
@@ -114,6 +119,48 @@ export const AppRouter = () => {
             element={
               <RequireAuth>
                 <PaySuccess />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/aftersale/apply"
+            element={
+              <RequireAuth>
+                <AftersaleApply />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/aftersale/list"
+            element={
+              <RequireAuth>
+                <AftersaleList />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/aftersale/detail/:id"
+            element={
+              <RequireAuth>
+                <AftersaleDetail />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/comment/create"
+            element={
+              <RequireAuth>
+                <CommentCreate />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/comment/my"
+            element={
+              <RequireAuth>
+                <MyComment />
               </RequireAuth>
             }
           />

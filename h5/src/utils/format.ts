@@ -29,3 +29,14 @@ export const maskName = (name: string): string => {
   if (name.length <= 1) return name
   return name[0] + '*'.repeat(name.length - 1)
 }
+
+/** 解析商品销售属性 JSON，形如 [{"key":"颜色","value":"红色"}] */
+export const formatProductAttr = (jsonAttr: string): string => {
+  if (!jsonAttr) return ''
+  try {
+    const arr = JSON.parse(jsonAttr) as { key: string; value: string }[]
+    return arr.map((a) => `${a.key}:${a.value}`).join('; ')
+  } catch {
+    return jsonAttr
+  }
+}
