@@ -48,7 +48,7 @@ export default function ProductDetail() {
       const data = await getProductDetailAPI(Number(id))
       if (data) {
         setProduct(data.product)
-        setBrand(data.brand)
+        setBrand(data.brand ?? ({} as PmsBrand))
         setSkuStockList(data.skuStockList || [])
         initImgList(data.product)
         initSpecList(data)

@@ -218,8 +218,8 @@ export type PmsProductLadder = {
 export type PmsPortalProductDetail = {
   /** 商品信息 */
   product: PmsProduct
-  /** 品牌信息 */
-  brand: PmsBrand
+  /** 品牌信息，brandId 指向已删除的品牌时后端返回 null */
+  brand: PmsBrand | null
   /** 商品属性与参数 */
   productAttributeList: PmsProductAttribute[]
   /** 手动录入的商品属性与参数值 */

@@ -67,7 +67,7 @@ export const genProducts = (count: number, startId = 1): PmsProduct[] => {
       recommandStatus: id % 2 === 0 ? 1 : 0,
       verifyStatus: 1,
       sort: id,
-      price: Math.floor(1000 + Math.random() * 9000),
+      price: Math.floor(10 + Math.random() * 90),
       originalPrice: 0,
       sale: Math.floor(Math.random() * 5000),
       stock: 999,
@@ -83,7 +83,7 @@ export const genProducts = (count: number, startId = 1): PmsProduct[] => {
       serviceIds: '1,2,3',
       createTime: '2024-01-01 10:00:00',
       updateTime: '2024-01-01 10:00:00',
-      flashPromotionPrice: id % 4 === 0 ? Math.floor(500 + Math.random() * 5000) : undefined,
+      flashPromotionPrice: id % 4 === 0 ? Math.floor(5 + Math.random() * 50) : undefined,
     })
   }
   return list

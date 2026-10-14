@@ -80,6 +80,37 @@ Maven 聚合工程，Spring Boot 2.7.5 / JDK 8：
 
 ## 运行方式
 
+> 本机 Docker 运行时是 **Colima**（非 Docker Desktop），`docker` / `docker compose` 命令由它提供。启动容器前先确保 Colima 在跑，常见操作见下节。
+
+### Colima 常见操作
+
+```bash
+colima start                     # 启动（已存在的 VM 沿用 ~/.colima/default/colima.yaml 里的规格）
+colima start --cpu 4 --memory 8  # 调整规格启动；改规格前必须先 colima stop
+colima stop                      # 停止 VM（容器一并停止，数据卷保留）
+colima status                    # 查看运行状态与 socket 路径
+colima list                      # 查看 CPU / MEMORY / DISK 配额
+colima ssh                       # 进 VM 内部（排查磁盘、系统日志）
+colima delete                    # 删除 VM，所有镜像与数据卷一起没了（慎用）
+```
+
+**内存要给够**：Colima 默认只给 2 CPU / 2GB 内存，而本项目一键启动有 6 个容器，且 `frontend` / `h5` 在镜像里跑 vite 构建很吃内存，2GB 会被 OOM Kill（构建中途退出、exit code 137）。建议：
+
+```bash
+colima stop
+colima start --cpu 4 --memory 8
+```
+
+其它注意点：
+
+- Docker daemon 配置（含镜像加速源）写在 `~/.colima/default/colima.yaml` 的 `docker:` 块里，改后需 `colima restart` 生效。Colima **不读** `~/.docker/daemon.json`。
+- Colima 的 docker CLI **不自带 buildx**，交叉编译 amd64 镜像前需手动装，见[前置条件](#前置条件本机一次性)。
+- **僵尸状态**：报 `Cannot connect to the Docker daemon at unix:///Users/xxx/.colima/default/docker.sock`，但 `colima list` 显示 Running —— 此时单独 `colima start` 无效，必须强制停再启：
+
+```bash
+colima stop --force && colima start
+```
+
 ### 方式一：Docker 一键启动（推荐）
 
 同时拉起管理前端、H5、后端、Redis、MinIO 五个容器（MySQL 走远程库）：

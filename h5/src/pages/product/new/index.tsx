@@ -69,7 +69,7 @@ export default function NewProductList() {
       </div>
       <div className="hot-page__loading">
         {loadingType === 'loading' && <SpinLoading color="primary" />}
-        {loadingType === 'nomore' && <span>没有更多了</span>}
+        {loadingType === 'nomore' && productList.length > 0 && <span>没有更多了</span>}
         {productList.length === 0 && loadingType !== 'loading' && (
           <Empty text="暂无商品" icon={<span className="hot-page__empty">📦</span>} />
         )}

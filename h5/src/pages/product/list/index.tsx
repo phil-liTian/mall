@@ -173,7 +173,7 @@ export default function ProductList() {
       {/* 加载状态 */}
       <div className="pl-loading-more">
         {loadingType === 'loading' && <SpinLoading color="primary" />}
-        {loadingType === 'nomore' && <span>没有更多了</span>}
+        {loadingType === 'nomore' && productList.length > 0 && <span>没有更多了</span>}
         {productList.length === 0 && loadingType !== 'loading' && (
           <Empty text="暂无商品" icon={<span className="pl-empty-icon">📦</span>} />
         )}
