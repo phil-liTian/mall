@@ -16,6 +16,7 @@ const ProductDetail = lazy(() => import('@/pages/product/detail'))
 const HotProductList = lazy(() => import('@/pages/product/hot'))
 const NewProductList = lazy(() => import('@/pages/product/new'))
 const OrderCreate = lazy(() => import('@/pages/order/create'))
+const FlashOrderCreate = lazy(() => import('@/pages/order/flash/create'))
 const OrderList = lazy(() => import('@/pages/order/list'))
 const OrderDetail = lazy(() => import('@/pages/order/detail'))
 const AddressList = lazy(() => import('@/pages/address/list'))
@@ -61,6 +62,14 @@ export const AppRouter = () => {
             element={
               <RequireAuth>
                 <OrderCreate />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/order/flash/create"
+            element={
+              <RequireAuth>
+                <FlashOrderCreate />
               </RequireAuth>
             }
           />

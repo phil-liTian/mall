@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Swiper, Toast, Dialog } from 'antd-mobile'
 import { getProductDetailAPI } from '@/api/product'
 import { addCartAPI } from '@/api/cart'
+import { getFlashRelationAPI } from '@/api/order'
 import { useMemberStore } from '@/store/member'
 import type {
   PmsProduct,
@@ -11,6 +12,7 @@ import type {
   PmsProductAttribute,
   SpecOption,
 } from '@/types/product'
+import type { FlashPromotionRelationDetail } from '@/types/order'
 import { buildSpecState } from './spec'
 import { QuantityStepper } from '@/components/Stepper'
 import { CommentSection } from '@/components/CommentSection'
@@ -36,6 +38,8 @@ export default function ProductDetail() {
   const [specVisible, setSpecVisible] = useState(false)
   const [attrVisible, setAttrVisible] = useState(false)
   const [quantity, setQuantity] = useState(1)
+  /** 当前生效的秒杀关联（null 表示该商品不在秒杀中） */
+  const [flashRelation, setFlashRelation] = useState<FlashPromotionRelationDetail | null>(null)
 
   // 当前价格（优先促销价）
   const currentPrice = useMemo(() => {
@@ -56,6 +60,13 @@ export default function ProductDetail() {
       }
     } catch (e) {
       console.error('加载商品详情失败', e)
+    }
+    // 查询当前是否处于秒杀活动，决定“立即秒杀”入口；未登录/不在活动中按普通商品处理
+    try {
+      const rel = await getFlashRelationAPI(Number(id))
+      setFlashRelation(rel || null)
+    } catch {
+      setFlashRelation(null)
     }
   }, [id])
 
@@ -178,6 +189,16 @@ export default function ProductDetail() {
     }
   }
 
+  /** 秒杀下单：选中规格后跳转秒杀确认页，数量受限购约束 */
+  const goFlashCreate = (skuStock: PmsSkuStock) => {
+    if (!flashRelation) return
+    const limit = flashRelation.flashPromotionLimit
+    const qty = limit > 0 ? Math.min(quantity, limit) : quantity
+    navigate(
+      `/order/flash/create?relationId=${flashRelation.id}&skuId=${skuStock.id}&productId=${product.id}&quantity=${Math.max(1, qty)}`,
+    )
+  }
+
   const handleBuyNow = () => {
     if (!checkLogin()) return
     if (!sellable) {
@@ -187,6 +208,10 @@ export default function ProductDetail() {
     const skuStock = getSkuStock()
     if (!skuStock) {
       setSpecVisible(true)
+      return
+    }
+    if (flashRelation) {
+      goFlashCreate(skuStock)
       return
     }
     Toast.show({ content: '请从购物车下单' })
@@ -323,7 +348,7 @@ export default function ProductDetail() {
         </div>
         <div className="detail-bottom__action-group">
           <button className="detail-bottom__action buy" onClick={handleBuyNow}>
-            立即购买
+            {flashRelation ? '立即秒杀' : '立即购买'}
           </button>
           <button className="detail-bottom__action cart" onClick={() => setSpecVisible(true)}>
             加入购物车

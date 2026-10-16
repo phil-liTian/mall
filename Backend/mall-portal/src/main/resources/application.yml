@@ -42,6 +42,7 @@ secure:
       - /druid/**
       - /actuator/**
       - /sso/**
+      - /home/**
       - /product/**
       # 评价只放行游客可读的两条，不能写 /comment/** —— 那样 create 也会被放行
       - /comment/list

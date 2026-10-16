@@ -3,6 +3,8 @@ package com.phil.mall.portal.controller;
 import com.phil.mall.common.api.CommonPage;
 import com.phil.mall.common.api.CommonResult;
 import com.phil.mall.portal.domain.ConfirmOrderResult;
+import com.phil.mall.portal.domain.FlashOrderParam;
+import com.phil.mall.portal.domain.FlashPromotionRelationDetail;
 import com.phil.mall.portal.domain.OmsOrderDetail;
 import com.phil.mall.portal.domain.OrderParam;
 import com.phil.mall.portal.service.OmsPortalOrderService;
@@ -41,6 +43,22 @@ public class OmsPortalOrderController {
     @ResponseBody
     public CommonResult generateOrder(@RequestBody OrderParam orderParam) {
         Map<String, Object> result = portalOrderService.generateOrder(orderParam);
+        return CommonResult.success(result, "下单成功");
+    }
+
+    @Operation(summary = "按商品id查询当前可下单的秒杀关系")
+    @RequestMapping(value = "/flash/availableRelation", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<FlashPromotionRelationDetail> getAvailableFlashRelation(@RequestParam Long productId) {
+        FlashPromotionRelationDetail detail = portalOrderService.getAvailableFlashRelationByProductId(productId);
+        return CommonResult.success(detail);
+    }
+
+    @Operation(summary = "生成秒杀订单")
+    @RequestMapping(value = "/flash/generate", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult generateFlashOrder(@RequestBody FlashOrderParam flashOrderParam) {
+        Map<String, Object> result = portalOrderService.generateFlashOrder(flashOrderParam);
         return CommonResult.success(result, "下单成功");
     }
 

@@ -1,11 +1,28 @@
 import { request } from '@/api/request'
 import type {
   ConfirmOrderResult,
+  FlashOrderParam,
+  FlashPromotionRelationDetail,
+  GenerateFlashOrderResult,
   GenerateOrderResult,
   OrderParam,
   OmsOrderDetail,
 } from '@/types/order'
 import type { CommonPage, PageParam } from '@/types/common'
+
+/** 查询商品当前可参与的秒杀关联信息 */
+export const getFlashRelationAPI = (productId: number) => {
+  return request<FlashPromotionRelationDetail>({
+    method: 'GET',
+    url: '/order/flash/availableRelation',
+    params: { productId },
+  })
+}
+
+/** 生成秒杀订单（价格只以服务端为准） */
+export const generateFlashOrderAPI = (data: FlashOrderParam) => {
+  return request<GenerateFlashOrderResult>({ method: 'POST', url: '/order/flash/generate', data })
+}
 
 /** 生成确认单信息 */
 export const generateConfirmOrderAPI = (cartIds: number[]) => {

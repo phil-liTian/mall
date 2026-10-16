@@ -24,6 +24,8 @@ const ReturnApplyDetail = lazy(() => import('@/pages/oms/returnApply/detail'))
 const ReturnReason = lazy(() => import('@/pages/oms/returnReason'))
 // SMS
 const Flash = lazy(() => import('@/pages/sms/flash'))
+const FlashSession = lazy(() => import('@/pages/sms/flash/session'))
+const FlashProductRelation = lazy(() => import('@/pages/sms/flash/productRelation'))
 const Coupon = lazy(() => import('@/pages/sms/coupon'))
 const CouponEdit = lazy(() => import('@/pages/sms/coupon/edit'))
 const HomeBrand = lazy(() => import('@/pages/sms/brand'))
@@ -77,6 +79,8 @@ const router = createBrowserRouter([
       { path: 'oms/returnReason', element: lazyEl(<ReturnReason />) },
       // SMS
       { path: 'sms/flash', element: lazyEl(<Flash />) },
+      { path: 'sms/flashSession', element: lazyEl(<FlashSession />) },
+      { path: 'sms/flashProductRelation', element: lazyEl(<FlashProductRelation />) },
       { path: 'sms/coupon', element: lazyEl(<Coupon />) },
       { path: 'sms/addCoupon', element: lazyEl(<CouponEdit />) },
       { path: 'sms/updateCoupon/:id', element: lazyEl(<CouponEdit />) },

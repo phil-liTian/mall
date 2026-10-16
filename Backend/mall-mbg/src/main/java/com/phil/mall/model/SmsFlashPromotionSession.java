@@ -1,5 +1,6 @@
 package com.phil.mall.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Date;
@@ -12,9 +13,11 @@ public class SmsFlashPromotionSession implements Serializable {
     private String name;
 
     @Schema(description = "每日开始时间")
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     private Date startTime;
 
     @Schema(description = "每日结束时间")
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     private Date endTime;
 
     @Schema(description = "启用状态：0->不启用；1->启用")

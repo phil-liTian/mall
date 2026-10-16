@@ -44,6 +44,7 @@
             LEFT JOIN oms_order_item ot ON o.id = ot.order_id
         WHERE
             o.status = 0
+            AND o.order_type = #{orderType}
             AND o.create_time &lt; date_add(NOW(), INTERVAL -#{minute} MINUTE);
     </select>
 
@@ -57,7 +58,7 @@
             END,
             lock_stock = CASE id
             <foreach collection="itemList" item="item">
-              WHEN #{item.productSkuId} THEN lock_stock - #{item.productQuantity}
+              WHEN #{item.productSkuId} THEN GREATEST(lock_stock - #{item.productQuantity}, 0)
             </foreach>
             END
         WHERE
@@ -66,20 +67,17 @@
             #{item.productSkuId}
         </foreach>
     </update>
-    <update id="updateOrderStatus">
+    <update id="updateOrderStatusById">
         update oms_order
         set status=#{status}
-        where id in
-        <foreach collection="ids" item="id" separator="," open="(" close=")">
-            #{id}
-        </foreach>
+        where id = #{id} and status = 0
     </update>
     <update id="releaseSkuStockLock">
         UPDATE pms_sku_stock
         SET
         lock_stock = CASE id
         <foreach collection="itemList" item="item">
-            WHEN #{item.productSkuId} THEN lock_stock - #{item.productQuantity}
+            WHEN #{item.productSkuId} THEN GREATEST(lock_stock - #{item.productQuantity}, 0)
         </foreach>
         END
         WHERE
@@ -97,18 +95,16 @@
     </update>
     <update id="reduceSkuStock">
         UPDATE pms_sku_stock
-        SET lock_stock = lock_stock - #{quantity},
+        SET lock_stock = GREATEST(lock_stock - #{quantity}, 0),
             stock = stock - #{quantity}
         WHERE
             id = #{productSkuId}
           AND stock - #{quantity} &gt;= 0
-          AND lock_stock - #{quantity} &gt;= 0
     </update>
     <update id="releaseStockBySkuId">
         UPDATE pms_sku_stock
-        SET lock_stock = lock_stock - #{quantity}
+        SET lock_stock = GREATEST(lock_stock - #{quantity}, 0)
         WHERE
             id = #{productSkuId}
-          AND lock_stock - #{quantity} &gt;= 0
     </update>
 </mapper>

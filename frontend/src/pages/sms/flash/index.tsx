@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Table, Input, Space, Button, Switch, Modal, Form, DatePicker, message, Popconfirm } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
@@ -14,6 +15,7 @@ import {
 const { RangePicker } = DatePicker
 
 export default function FlashPage() {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [dataSource, setDataSource] = useState<SmsFlash[]>([])
   const [total, setTotal] = useState(0)
@@ -63,7 +65,7 @@ export default function FlashPage() {
       setEditId(record.id)
       form.setFieldsValue({
         title: record.title,
-        range: [dayjs(record.startTime), dayjs(record.endTime)],
+        range: [dayjs(record.startDate), dayjs(record.endDate)],
       })
     } else {
       setEditId(null)
@@ -77,8 +79,8 @@ export default function FlashPage() {
     const [start, end] = values.range as [dayjs.Dayjs, dayjs.Dayjs]
     const payload = {
       title: values.title,
-      startTime: start.format('YYYY-MM-DD HH:mm:ss'),
-      endTime: end.format('YYYY-MM-DD HH:mm:ss'),
+      startDate: start.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      endDate: end.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
     }
     if (editId) {
       await updateFlash(editId, payload)
@@ -93,8 +95,8 @@ export default function FlashPage() {
 
   const columns: ColumnsType<SmsFlash> = [
     { title: '活动名称', dataIndex: 'title' },
-    { title: '开始时间', dataIndex: 'startTime' },
-    { title: '结束时间', dataIndex: 'endTime' },
+    { title: '开始日期', dataIndex: 'startDate', render: (v: string) => v?.slice(0, 10) },
+    { title: '结束日期', dataIndex: 'endDate', render: (v: string) => v?.slice(0, 10) },
     {
       title: '上下线状态',
       dataIndex: 'status',
@@ -107,6 +109,16 @@ export default function FlashPage() {
       key: 'action',
       render: (_, record) => (
         <Space>
+          <Button type="link" size="small" onClick={() => navigate(`/sms/flashSession?id=${record.id}`)}>
+            秒杀时段
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => navigate(`/sms/flashProductRelation?id=${record.id}`)}
+          >
+            秒杀商品
+          </Button>
           <Button type="link" size="small" onClick={() => openModal(record)}>
             编辑
           </Button>
@@ -164,8 +176,8 @@ export default function FlashPage() {
           <Form.Item name="title" label="活动名称" rules={[{ required: true, message: '请输入活动名称' }]}>
             <Input placeholder="请输入活动名称" />
           </Form.Item>
-          <Form.Item name="range" label="活动时间" rules={[{ required: true, message: '请选择活动时间' }]}>
-            <RangePicker showTime style={{ width: '100%' }} />
+          <Form.Item name="range" label="活动日期" rules={[{ required: true, message: '请选择活动日期' }]}>
+            <RangePicker style={{ width: '100%' }} />
           </Form.Item>
         </Form>
       </Modal>

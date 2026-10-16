@@ -7,8 +7,8 @@ const flashes = Mock.mock({
     {
       'id|+1': 1,
       title: '@ctitle(4,8)秒杀',
-      startTime: '@datetime',
-      endTime: '@datetime',
+      startDate: '@date',
+      endDate: '@date',
       'status|0-1': 1,
     },
   ],

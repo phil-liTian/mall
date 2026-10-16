@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,24 +105,33 @@ public class HomeServiceImpl implements HomeService {
         HomeFlashPromotion homeFlashPromotion = new HomeFlashPromotion();
         //获取当前秒杀活动
         Date now = new Date();
-        SmsFlashPromotion flashPromotion = getFlashPromotion(now);
-        if (flashPromotion != null) {
-            //获取当前秒杀场次
-            SmsFlashPromotionSession flashPromotionSession = getFlashPromotionSession(now);
-            if (flashPromotionSession != null) {
-                homeFlashPromotion.setStartTime(flashPromotionSession.getStartTime());
-                homeFlashPromotion.setEndTime(flashPromotionSession.getEndTime());
-                //获取下一个秒杀场次
-                SmsFlashPromotionSession nextSession = getNextFlashPromotionSession(homeFlashPromotion.getStartTime());
-                if(nextSession!=null){
-                    homeFlashPromotion.setNextStartTime(nextSession.getStartTime());
-                    homeFlashPromotion.setNextEndTime(nextSession.getEndTime());
-                }
-                //获取秒杀商品
-                List<FlashPromotionProduct> flashProductList = homeDao.getFlashProductList(flashPromotion.getId(), flashPromotionSession.getId());
-                homeFlashPromotion.setProductList(flashProductList);
+        //当前日期内所有已启用的秒杀活动都参与首页展示
+        List<SmsFlashPromotion> flashPromotionList = getFlashPromotionList(now);
+        if (CollectionUtils.isEmpty(flashPromotionList)) {
+            return homeFlashPromotion;
+        }
+        //获取当前秒杀场次
+        SmsFlashPromotionSession flashPromotionSession = getFlashPromotionSession(now);
+        if (flashPromotionSession == null) {
+            return homeFlashPromotion;
+        }
+        homeFlashPromotion.setStartTime(flashPromotionSession.getStartTime());
+        homeFlashPromotion.setEndTime(flashPromotionSession.getEndTime());
+        //获取下一个秒杀场次
+        SmsFlashPromotionSession nextSession = getNextFlashPromotionSession(homeFlashPromotion.getStartTime());
+        if (nextSession != null) {
+            homeFlashPromotion.setNextStartTime(nextSession.getStartTime());
+            homeFlashPromotion.setNextEndTime(nextSession.getEndTime());
+        }
+        //汇总各活动在当前场次下的秒杀商品
+        List<FlashPromotionProduct> flashProductList = new ArrayList<>();
+        for (SmsFlashPromotion flashPromotion : flashPromotionList) {
+            List<FlashPromotionProduct> productList = homeDao.getFlashProductList(flashPromotion.getId(), flashPromotionSession.getId());
+            if (!CollectionUtils.isEmpty(productList)) {
+                flashProductList.addAll(productList);
             }
         }
+        homeFlashPromotion.setProductList(flashProductList);
         return homeFlashPromotion;
     }
 
@@ -145,19 +155,15 @@ public class HomeServiceImpl implements HomeService {
         return advertiseMapper.selectByExample(example);
     }
 
-    //根据时间获取秒杀活动
-    private SmsFlashPromotion getFlashPromotion(Date date) {
+    //根据时间获取生效中的秒杀活动
+    private List<SmsFlashPromotion> getFlashPromotionList(Date date) {
         Date currDate = DateUtil.getDate(date);
         SmsFlashPromotionExample example = new SmsFlashPromotionExample();
         example.createCriteria()
                 .andStatusEqualTo(1)
                 .andStartDateLessThanOrEqualTo(currDate)
                 .andEndDateGreaterThanOrEqualTo(currDate);
-        List<SmsFlashPromotion> flashPromotionList = flashPromotionMapper.selectByExample(example);
-        if (!CollectionUtils.isEmpty(flashPromotionList)) {
-            return flashPromotionList.get(0);
-        }
-        return null;
+        return flashPromotionMapper.selectByExample(example);
     }
 
     //根据时间获取秒杀场次

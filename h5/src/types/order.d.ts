@@ -139,6 +139,48 @@ export type OrderParam = {
   useIntegration: number
 }
 
+/** 秒杀订单请求参数（对应后端 FlashOrderParam，价格只以服务端为准） */
+export type FlashOrderParam = {
+  /** 秒杀活动与商品关联ID */
+  flashPromotionRelationId: number
+  /** 商品SKU ID */
+  productSkuId: number
+  /** 购买数量 */
+  quantity: number
+  /** 收货地址ID */
+  memberReceiveAddressId?: number
+  /** 支付方式：0->未支付；1->支付宝；2->微信 */
+  payType: number
+}
+
+/** 秒杀活动商品详情（对应后端 FlashPromotionRelationDetail） */
+export type FlashPromotionRelationDetail = {
+  /** 关联ID */
+  id: number
+  /** 秒杀活动ID */
+  flashPromotionId: number
+  /** 场次ID */
+  flashPromotionSessionId: number
+  /** 商品ID */
+  productId: number
+  /** 秒杀价格 */
+  flashPromotionPrice: number
+  /** 秒杀总库存（配额） */
+  flashPromotionCount: number
+  /** 每人限购数量 */
+  flashPromotionLimit: number
+  /** 排序 */
+  sort: number
+}
+
+/** 生成秒杀订单返回结果（后端返回 {order, orderItemList}） */
+export type GenerateFlashOrderResult = {
+  /** 订单信息 */
+  order: OmsOrderDetail
+  /** 订单商品列表 */
+  orderItemList: OmsOrderItem[]
+}
+
 /** 生成订单返回结果（对应后端 OrderResult） */
 export type GenerateOrderResult = {
   /** 订单信息 */

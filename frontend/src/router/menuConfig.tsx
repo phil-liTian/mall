@@ -45,6 +45,8 @@ export const menuConfig: MenuItem[] = [
     icon: <SoundOutlined />,
     children: [
       { key: '/sms/flash', label: '秒杀活动列表' },
+      { key: '/sms/flashSession', label: '秒杀时段' },
+      { key: '/sms/flashProductRelation', label: '秒杀商品' },
       { key: '/sms/coupon', label: '优惠券列表' },
       { key: '/sms/brand', label: '品牌推荐' },
       { key: '/sms/new', label: '新品推荐' },

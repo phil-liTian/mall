@@ -9,6 +9,7 @@ import com.phil.mall.common.service.RedisService;
 import com.phil.mall.mapper.*;
 import com.phil.mall.model.*;
 import com.phil.mall.portal.component.CancelOrderSender;
+import com.phil.mall.portal.dao.PortalFlashPromotionDao;
 import com.phil.mall.portal.dao.PortalOrderDao;
 import com.phil.mall.portal.dao.PortalOrderItemDao;
 import com.phil.mall.portal.dao.SmsCouponHistoryDao;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -67,6 +69,10 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     private OmsOrderItemMapper orderItemMapper;
     @Autowired
     private CancelOrderSender cancelOrderSender;
+    @Autowired
+    private PortalFlashPromotionDao portalFlashPromotionDao;
+    @Autowired
+    private PmsProductMapper productMapper;
 
     @Override
     public ConfirmOrderResult generateConfirmOrder(List<Long> cartIds) {
@@ -93,6 +99,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> generateOrder(OrderParam orderParam) {
         List<OmsOrderItem> orderItemList = new ArrayList<>();
         //校验收货地址
@@ -252,6 +259,138 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     }
 
     @Override
+    public FlashPromotionRelationDetail getAvailableFlashRelationByProductId(Long productId) {
+        if (productId == null) {
+            Asserts.fail("商品id不能为空！");
+        }
+        return portalFlashPromotionDao.getAvailableRelationByProductId(productId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> generateFlashOrder(FlashOrderParam flashOrderParam) {
+        //校验收货地址与购买数量
+        if (flashOrderParam.getMemberReceiveAddressId() == null) {
+            Asserts.fail("请选择收货地址！");
+        }
+        if (flashOrderParam.getQuantity() == null || flashOrderParam.getQuantity() <= 0) {
+            Asserts.fail("购买数量不合法！");
+        }
+        //1.查询秒杀商品关系（SQL中已校验活动与场次在有效期内，查不到即不可下单）
+        FlashPromotionRelationDetail relation = portalFlashPromotionDao.getAvailableRelation(flashOrderParam.getFlashPromotionRelationId());
+        if (relation == null) {
+            Asserts.fail("该秒杀商品不在活动时间内或已下架！");
+        }
+        //2.校验所选SKU确实属于该秒杀商品（防止用A商品的秒杀价买B商品的SKU）
+        PmsSkuStock skuStock = skuStockMapper.selectByPrimaryKey(flashOrderParam.getProductSkuId());
+        if (skuStock == null || !skuStock.getProductId().equals(relation.getProductId())) {
+            Asserts.fail("所选商品规格不属于该秒杀商品！");
+        }
+        PmsProduct product = productMapper.selectByPrimaryKey(relation.getProductId());
+        if (product == null) {
+            Asserts.fail("商品不存在！");
+        }
+        //3.限购校验：历史购买量+本次数量<=限购数
+        UmsMember currentMember = memberService.getCurrentMember();
+        Integer bought = portalFlashPromotionDao.countFlashBoughtByMember(currentMember.getId(), relation.getId());
+        if (relation.getFlashPromotionLimit() != null && relation.getFlashPromotionLimit() > 0
+                && bought + flashOrderParam.getQuantity() > relation.getFlashPromotionLimit()) {
+            Asserts.fail("超出每人限购数量！");
+        }
+        //4.原子扣减秒杀配额（防超卖的第一道防线）
+        int deductCount = portalFlashPromotionDao.deductFlashQuota(relation.getId(), flashOrderParam.getQuantity());
+        if (deductCount == 0) {
+            Asserts.fail("手慢了，商品已抢完！");
+        }
+        //5.原子锁定真实库存（失败时事务回滚，配额扣减自动撤销）
+        int lockCount = portalOrderDao.lockStockBySkuId(flashOrderParam.getProductSkuId(), flashOrderParam.getQuantity());
+        if (lockCount == 0) {
+            Asserts.fail("库存不足，无法下单");
+        }
+        //6.构建订单与订单商品（价格只取服务端的flash_promotion_price）
+        OmsOrderItem orderItem = new OmsOrderItem();
+        orderItem.setProductId(product.getId());
+        orderItem.setProductName(product.getName());
+        orderItem.setProductPic(skuStock.getPic() != null && !skuStock.getPic().isEmpty() ? skuStock.getPic() : product.getPic());
+        orderItem.setProductAttr(skuStock.getSpData());
+        orderItem.setProductBrand(product.getBrandName());
+        orderItem.setProductSn(product.getProductSn());
+        orderItem.setProductPrice(relation.getFlashPromotionPrice());
+        orderItem.setProductQuantity(flashOrderParam.getQuantity());
+        orderItem.setProductSkuId(flashOrderParam.getProductSkuId());
+        orderItem.setProductSkuCode(skuStock.getSkuCode());
+        orderItem.setProductCategoryId(product.getProductCategoryId());
+        orderItem.setPromotionAmount(new BigDecimal(0));
+        orderItem.setPromotionName("秒杀活动");
+        orderItem.setCouponAmount(new BigDecimal(0));
+        orderItem.setIntegrationAmount(new BigDecimal(0));
+        orderItem.setGiftIntegration(0);
+        orderItem.setGiftGrowth(0);
+        orderItem.setRealAmount(relation.getFlashPromotionPrice());
+        List<OmsOrderItem> orderItemList = new ArrayList<>();
+        orderItemList.add(orderItem);
+
+        OmsOrder order = new OmsOrder();
+        order.setDiscountAmount(new BigDecimal(0));
+        order.setTotalAmount(calcTotalAmount(orderItemList));
+        order.setFreightAmount(new BigDecimal(0));
+        order.setPromotionAmount(new BigDecimal(0));
+        order.setPromotionInfo("秒杀活动");
+        order.setCouponAmount(new BigDecimal(0));
+        order.setIntegration(0);
+        order.setIntegrationAmount(new BigDecimal(0));
+        order.setPayAmount(calcPayAmount(order));
+        order.setMemberId(currentMember.getId());
+        order.setCreateTime(new Date());
+        order.setMemberUsername(currentMember.getUsername());
+        //支付方式：0->未支付；1->支付宝；2->微信
+        order.setPayType(flashOrderParam.getPayType());
+        //订单来源：0->PC订单；1->app订单
+        order.setSourceType(1);
+        //订单状态：0->待付款
+        order.setStatus(0);
+        //订单类型：1->秒杀订单
+        order.setOrderType(1);
+        //收货人信息：姓名、电话、邮编、地址
+        UmsMemberReceiveAddress address = memberReceiveAddressService.getItem(flashOrderParam.getMemberReceiveAddressId());
+        order.setReceiverName(address.getName());
+        order.setReceiverPhone(address.getPhoneNumber());
+        order.setReceiverPostCode(address.getPostCode());
+        order.setReceiverProvince(address.getProvince());
+        order.setReceiverCity(address.getCity());
+        order.setReceiverRegion(address.getRegion());
+        order.setReceiverDetailAddress(address.getDetailAddress());
+        order.setConfirmStatus(0);
+        order.setDeleteStatus(0);
+        order.setGrowth(0);
+        //生成订单号
+        order.setOrderSn(generateOrderSn(order));
+        //设置自动收货天数
+        List<OmsOrderSetting> orderSettings = orderSettingMapper.selectByExample(new OmsOrderSettingExample());
+        if (CollUtil.isNotEmpty(orderSettings)) {
+            order.setAutoConfirmDay(orderSettings.get(0).getConfirmOvertime());
+        }
+        //7.插入订单、订单项、秒杀配额关联
+        orderMapper.insert(order);
+        orderItem.setOrderId(order.getId());
+        orderItem.setOrderSn(order.getOrderSn());
+        orderItemDao.insertList(orderItemList);
+        OmsOrderFlashRelation flashRelation = new OmsOrderFlashRelation();
+        flashRelation.setOrderId(order.getId());
+        flashRelation.setFlashPromotionRelationId(relation.getId());
+        flashRelation.setProductSkuId(flashOrderParam.getProductSkuId());
+        flashRelation.setQuantity(flashOrderParam.getQuantity());
+        portalFlashPromotionDao.insertOrderFlashRelation(flashRelation);
+        //8.发送延迟消息取消订单
+        sendDelayMessageCancelOrder(order.getId());
+        Map<String, Object> result = new HashMap<>();
+        result.put("order", order);
+        result.put("orderItemList", orderItemList);
+        return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer paySuccess(Long orderId, Integer payType) {
         //修改订单支付状态
         OmsOrder order = new OmsOrder();
@@ -283,23 +422,40 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer cancelTimeOutOrder() {
-        Integer count=0;
+        Integer count = 0;
         OmsOrderSetting orderSetting = orderSettingMapper.selectByPrimaryKey(1L);
+        //普通订单按normal_order_overtime取消
+        count += cancelTimeOutOrderByType(0, orderSetting.getNormalOrderOvertime());
+        //秒杀订单按flash_order_overtime取消，为null时回落到普通超时时间
+        Integer flashOvertime = orderSetting.getFlashOrderOvertime() != null
+                ? orderSetting.getFlashOrderOvertime() : orderSetting.getNormalOrderOvertime();
+        count += cancelTimeOutOrderByType(1, flashOvertime);
+        return count;
+    }
+
+    /**
+     * 按订单类型取消超时未付款订单，返回成功取消的订单数
+     */
+    private int cancelTimeOutOrderByType(Integer orderType, Integer minute) {
+        Integer count = 0;
         //查询超时、未支付的订单及订单详情
-        List<OmsOrderDetail> timeOutOrders = portalOrderDao.getTimeOutOrders(orderSetting.getNormalOrderOvertime());
+        List<OmsOrderDetail> timeOutOrders = portalOrderDao.getTimeOutOrders(minute, orderType);
         if (CollectionUtils.isEmpty(timeOutOrders)) {
             return count;
         }
-        //修改订单状态为交易取消
-        List<Long> ids = new ArrayList<>();
         for (OmsOrderDetail timeOutOrder : timeOutOrders) {
-            ids.add(timeOutOrder.getId());
-        }
-        portalOrderDao.updateOrderStatus(ids, 4);
-        for (OmsOrderDetail timeOutOrder : timeOutOrders) {
+            //逐笔修改订单状态为交易取消；影响0行说明已被MQ路径取消，后续动作全部跳过
+            int updateCount = portalOrderDao.updateOrderStatusById(timeOutOrder.getId(), 4);
+            if (updateCount == 0) {
+                continue;
+            }
+            count += updateCount;
             //解除订单商品库存锁定
             portalOrderDao.releaseSkuStockLock(timeOutOrder.getOrderItemList());
+            //归还秒杀配额（普通订单无关联记录，自然跳过）
+            returnFlashQuota(timeOutOrder.getId());
             //修改优惠券使用状态
             updateCouponStatus(timeOutOrder.getCouponId(), timeOutOrder.getMemberId(), 0);
             //返还使用积分
@@ -308,10 +464,21 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 memberService.updateIntegration(timeOutOrder.getMemberId(), member.getIntegration() + timeOutOrder.getUseIntegration());
             }
         }
-        return timeOutOrders.size();
+        return count;
+    }
+
+    /**
+     * 归还订单占用的秒杀配额
+     */
+    private void returnFlashQuota(Long orderId) {
+        OmsOrderFlashRelation relation = portalFlashPromotionDao.getOrderFlashRelationByOrderId(orderId);
+        if (relation != null) {
+            portalFlashPromotionDao.returnFlashQuota(relation.getFlashPromotionRelationId(), relation.getQuantity());
+        }
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void cancelOrder(Long orderId) {
         //查询未付款的取消订单
         OmsOrderExample example = new OmsOrderExample();
@@ -332,11 +499,14 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             if (!CollectionUtils.isEmpty(orderItemList)) {
                 for (OmsOrderItem orderItem : orderItemList) {
                     int count = portalOrderDao.releaseStockBySkuId(orderItem.getProductSkuId(),orderItem.getProductQuantity());
+                    //影响0行说明SKU已不存在，记录后继续，不能让库存异常卡死整笔取消
                     if(count==0){
-                        Asserts.fail("库存不足，无法释放！");
+                        log.warn("release stock failed, orderId:{} skuId:{}", orderId, orderItem.getProductSkuId());
                     }
                 }
             }
+            //归还秒杀配额（普通订单无关联记录，自然跳过）
+            returnFlashQuota(cancelOrder.getId());
             //修改优惠券使用状态
             updateCouponStatus(cancelOrder.getCouponId(), cancelOrder.getMemberId(), 0);
             //返还使用积分
@@ -349,9 +519,15 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     @Override
     public void sendDelayMessageCancelOrder(Long orderId) {
-        //获取订单超时时间
+        //获取订单超时时间：秒杀订单用flash_order_overtime，为null时回落到normal_order_overtime
         OmsOrderSetting orderSetting = orderSettingMapper.selectByPrimaryKey(1L);
-        long delayTimes = orderSetting.getNormalOrderOvertime() * 60 * 1000;
+        OmsOrder order = orderMapper.selectByPrimaryKey(orderId);
+        Integer overtime = orderSetting.getNormalOrderOvertime();
+        if (order != null && order.getOrderType() != null && order.getOrderType() == 1
+                && orderSetting.getFlashOrderOvertime() != null) {
+            overtime = orderSetting.getFlashOrderOvertime();
+        }
+        long delayTimes = overtime * 60 * 1000L;
         //发送延迟消息取消订单
         cancelOrderSender.sendMessage(orderId, delayTimes);
     }
@@ -443,6 +619,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void paySuccessByOrderSn(String orderSn, Integer payType) {
         OmsOrderExample example =  new OmsOrderExample();
         example.createCriteria()

@@ -4,8 +4,8 @@ import type { CommonPage } from '@/types/common'
 export interface SmsFlash {
   id: number
   title: string
-  startTime: string
-  endTime: string
+  startDate: string
+  endDate: string
   status: number
 }
 

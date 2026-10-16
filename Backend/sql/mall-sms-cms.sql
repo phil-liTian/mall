@@ -159,6 +159,49 @@ CREATE TABLE `sms_flash_promotion`  (
 INSERT INTO `sms_flash_promotion` VALUES (14, '双11特卖活动', '2022-11-09', '2023-12-31', 1, '2022-11-09 14:56:48');
 
 -- ----------------------------
+-- Table structure for sms_flash_promotion_session
+-- ----------------------------
+DROP TABLE IF EXISTS `sms_flash_promotion_session`;
+CREATE TABLE `sms_flash_promotion_session`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '场次名称',
+  `start_time` time NULL DEFAULT NULL COMMENT '每日开始时间',
+  `end_time` time NULL DEFAULT NULL COMMENT '每日结束时间',
+  `status` int(1) NULL DEFAULT NULL COMMENT '启用状态：0->不启用；1->启用',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '限时购场次表' ROW_FORMAT = DYNAMIC;
+
+-- 全天覆盖的场次，便于联调；按时段可自行拆分
+INSERT INTO `sms_flash_promotion_session` VALUES (1, '零点场', '00:00:00', '08:00:00', 1, NOW());
+INSERT INTO `sms_flash_promotion_session` VALUES (2, '上午场', '08:00:00', '16:00:00', 1, NOW());
+INSERT INTO `sms_flash_promotion_session` VALUES (3, '晚间场', '16:00:00', '23:59:59', 1, NOW());
+
+-- ----------------------------
+-- Table structure for sms_flash_promotion_product_relation
+-- ----------------------------
+DROP TABLE IF EXISTS `sms_flash_promotion_product_relation`;
+CREATE TABLE `sms_flash_promotion_product_relation`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `flash_promotion_id` bigint(20) NULL DEFAULT NULL,
+  `flash_promotion_session_id` bigint(20) NULL DEFAULT NULL COMMENT '场次id',
+  `product_id` bigint(20) NULL DEFAULT NULL,
+  `flash_promotion_price` decimal(10,2) NULL DEFAULT NULL COMMENT '秒杀价格',
+  `flash_promotion_count` int(11) NULL DEFAULT NULL COMMENT '秒杀配额（本场最多卖多少件）',
+  `flash_promotion_limit` int(11) NULL DEFAULT NULL COMMENT '每人限购数量',
+  `sort` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '商品限时购与商品关系表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- 当前有效的测试数据（活动覆盖今天、三场覆盖全天、商品29三个场次各一份配额）
+-- ----------------------------
+INSERT INTO `sms_flash_promotion` VALUES (20, '常设秒杀活动', '2026-01-01', '2030-12-31', 1, NOW());
+INSERT INTO `sms_flash_promotion_product_relation` VALUES (1, 20, 1, 29, 4999.00, 100, 1, 1);
+INSERT INTO `sms_flash_promotion_product_relation` VALUES (2, 20, 2, 29, 4999.00, 100, 1, 2);
+INSERT INTO `sms_flash_promotion_product_relation` VALUES (3, 20, 3, 29, 4999.00, 100, 1, 3);
+
+-- ----------------------------
 -- Table structure for sms_home_advertise
 -- ----------------------------
 DROP TABLE IF EXISTS `sms_home_advertise`;

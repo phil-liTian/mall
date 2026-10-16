@@ -2,6 +2,8 @@ package com.phil.mall.portal.service;
 
 import com.phil.mall.common.api.CommonPage;
 import com.phil.mall.portal.domain.ConfirmOrderResult;
+import com.phil.mall.portal.domain.FlashOrderParam;
+import com.phil.mall.portal.domain.FlashPromotionRelationDetail;
 import com.phil.mall.portal.domain.OmsOrderDetail;
 import com.phil.mall.portal.domain.OrderParam;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,17 @@ public interface OmsPortalOrderService {
      */
     @Transactional
     Map<String, Object> generateOrder(OrderParam orderParam);
+
+    /**
+     * 生成秒杀订单（价格只从服务端取）
+     */
+    @Transactional
+    Map<String, Object> generateFlashOrder(FlashOrderParam flashOrderParam);
+
+    /**
+     * 按商品id查询当前可下单的秒杀关系（活动与场次均在有效期内），无则返回null
+     */
+    FlashPromotionRelationDetail getAvailableFlashRelationByProductId(Long productId);
 
     /**
      * 支付成功后的回调

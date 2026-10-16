@@ -29,7 +29,7 @@ public class SmsFlashPromotionServiceImpl implements SmsFlashPromotionService {
     @Override
     public int update(Long id, SmsFlashPromotion flashPromotion) {
         flashPromotion.setId(id);
-        return flashPromotionMapper.updateByPrimaryKey(flashPromotion);
+        return flashPromotionMapper.updateByPrimaryKeySelective(flashPromotion);
     }
 
     @Override

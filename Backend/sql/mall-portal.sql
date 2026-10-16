@@ -121,6 +121,18 @@ CREATE TABLE `oms_order_setting`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '订单设置表' ROW_FORMAT = DYNAMIC;
 
+-- ---------------------------- oms_order_flash_relation ----------------------------
+DROP TABLE IF EXISTS `oms_order_flash_relation`;
+CREATE TABLE `oms_order_flash_relation`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `order_id` bigint(20) NOT NULL,
+  `flash_promotion_relation_id` bigint(20) NOT NULL COMMENT 'sms_flash_promotion_product_relation.id',
+  `product_sku_id` bigint(20) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_order_id`(`order_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '秒杀订单与秒杀商品配额关联表' ROW_FORMAT = DYNAMIC;
+
 -- ---------------------------- ums_member ----------------------------
 DROP TABLE IF EXISTS `ums_member`;
 CREATE TABLE `ums_member`  (

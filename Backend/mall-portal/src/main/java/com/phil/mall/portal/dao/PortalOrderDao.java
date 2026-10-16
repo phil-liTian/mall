@@ -24,13 +24,14 @@ public interface PortalOrderDao {
     /**
      * 获取超时订单
      * @param minute 超时时间（分）
+     * @param orderType 订单类型：0->正常订单；1->秒杀订单
      */
-    List<OmsOrderDetail> getTimeOutOrders(@Param("minute") Integer minute);
+    List<OmsOrderDetail> getTimeOutOrders(@Param("minute") Integer minute, @Param("orderType") Integer orderType);
 
     /**
-     * 批量修改订单状态
+     * 逐笔修改订单状态（仅待付款订单，防止与MQ路径重复取消；按影响行数决定是否执行后续补偿动作）
      */
-    int updateOrderStatus(@Param("ids") List<Long> ids,@Param("status") Integer status);
+    int updateOrderStatusById(@Param("id") Long id,@Param("status") Integer status);
 
     /**
      * 解除取消订单的库存锁定
