@@ -4,7 +4,7 @@ import com.phil.mall.model.UmsMember;
 
 /**
  * 会员信息缓存业务类
- * Created by macro on 2020/3/14.
+ * Created by phil on 2026/10/9.
  */
 public interface UmsMemberCacheService {
     /**

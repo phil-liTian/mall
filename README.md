@@ -77,6 +77,27 @@ Maven 聚合工程，Spring Boot 2.7.5 / JDK 8：
 - **MySQL 8**：远程库（`application-dev.yml` 中配置），本地不启动。
 - **Redis 7**：缓存。
 - **MinIO**：对象存储，文件上传（bucket `mall`）。
+- **Elasticsearch 7.17**：商品搜索（`pms` 索引，自带 IK 中文分词器）。
+
+### 查看 ES 数据
+
+商品数据改后需重新建索引：
+
+```bash
+curl -X POST localhost:8085/esProduct/importAll
+```
+
+常用查看命令：
+
+```bash
+curl -s "localhost:9200/_cat/indices?v"                      # 索引概览（docs.count 应与导入数一致）
+curl -s "localhost:9200/pms/_search?pretty&size=50"          # 查看全部商品文档
+curl -s "localhost:9200/pms/_mapping?pretty"                 # 字段映射
+curl -s "localhost:9200/_analyze?pretty" -H 'Content-Type: application/json' \
+  -d '{"analyzer":"ik_max_word","text":"小米手机"}'            # 查看中文分词效果
+```
+
+> 没装控制台；需要图形界面可自行加 ElasticVue 或 Kibana（Kibana 需 7.17.9 匹配版本，且再吃约 1G 内存）。
 
 ## 运行方式
 

@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * 购物车中带商品属性和SKU库存的商品对象
- * Created by macro on 2018/8/2.
+ * Created by phil on 2026/10/9.
  */
 @Getter
 @Setter

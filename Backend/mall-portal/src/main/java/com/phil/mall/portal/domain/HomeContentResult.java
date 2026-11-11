@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 首页内容返回信息封装
- * Created by macro on 2019/1/28.
+ * Created by phil on 2026/10/9.
  */
 @Getter
 @Setter

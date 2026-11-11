@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 /**
  * 带促销信息的购物车商品封装
- * Created by macro on 2018/8/27.
+ * Created by phil on 2026/10/9.
  */
 @Getter
 @Setter

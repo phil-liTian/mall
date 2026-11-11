@@ -21,6 +21,8 @@ spring:
     port: ${REDIS_PORT:6379}
     password:
     timeout: 300ms
+  elasticsearch:
+    uris: ${ES_URIS:localhost:9200}
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}

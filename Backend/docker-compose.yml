@@ -1,6 +1,6 @@
 # ============================================================
 # mall-admin 开发环境中间件
-# ponytail: 仅 MySQL8 + Redis7 + MinIO，不含 ES/MongoDB/RabbitMQ
+# ponytail: 仅 MySQL8 + Redis7 + MinIO + ES7，不含 MongoDB/RabbitMQ
 # 用法：docker compose up -d
 # ============================================================
 version: "3"
@@ -51,6 +51,24 @@ services:
     entrypoint: sh -c "minio server /data --console-address ':9001' & sleep 5 && mc alias set local http://localhost:9000 minioadmin minioadmin && mc mb -p local/mall || true && mc anonymous set download local/mall || true && wait"
     restart: unless-stopped
 
+  # 商品搜索索引；镜像自带 IK 中文分词器（见 Dockerfile.es）
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: Dockerfile.es
+    image: mall-elasticsearch:7.17.9
+    container_name: mall-elasticsearch
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      TZ: Asia/Shanghai
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
   mall-admin:
     build:
       context: .
@@ -74,3 +92,4 @@ volumes:
   mysql-data:
   redis-data:
   minio-data:
+  es-data:

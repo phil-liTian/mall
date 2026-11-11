@@ -1,5 +1,5 @@
 # ============================================================
-# 本地全栈环境：前端 + 后端 + Redis + MinIO 一键启动
+# 本地全栈环境：前端 + 后端 + Redis + MinIO + ES 一键启动
 # MySQL 走 application-dev.yml 默认的远程库，不在本地起
 # 用法：docker compose -f docker-compose.local.yml up -d --build
 #   管理端 http://localhost:8088   H5 http://localhost:8089
@@ -47,6 +47,30 @@ services:
       - rabbitmq-data:/var/lib/rabbitmq
     restart: unless-stopped
 
+  # 商品搜索索引；镜像自带 IK 中文分词器（见 Backend/Dockerfile.es）
+  elasticsearch:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile.es
+    image: mall-elasticsearch:7.17.9
+    container_name: mall-elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      TZ: Asia/Shanghai
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    # ES 冷启动要几十秒，portal 连不上会直接启动失败，这里让它等到真的能查了再放行
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
   mall-admin:
     build:
       context: ./Backend
@@ -87,6 +111,7 @@ services:
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
       SPRING_RABBITMQ_HOST: rabbitmq
+      ES_URIS: elasticsearch:9200
       MINIO_ENDPOINT: http://minio:9000
       # 上传走容器内 minio:9000，但写进数据库的 URL 要用浏览器可达的宿主机地址
       MINIO_PUBLICURL: http://localhost:9100
@@ -94,9 +119,14 @@ services:
     env_file:
       - Backend/.env
     depends_on:
-      - redis
-      - rabbitmq
-      - minio
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+      minio:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
     restart: unless-stopped
 
   mall-frontend:
@@ -132,5 +162,6 @@ volumes:
   redis-data:
   minio-data:
   rabbitmq-data:
+  es-data:
 
 

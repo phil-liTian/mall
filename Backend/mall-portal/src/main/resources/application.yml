@@ -44,6 +44,8 @@ secure:
       - /sso/**
       - /home/**
       - /product/**
+      # 手动重建商品索引，本地体验用；上线前应收回或改挂到 admin
+      - /esProduct/**
       # 评价只放行游客可读的两条，不能写 /comment/** —— 那样 create 也会被放行
       - /comment/list
       - /comment/stat/**

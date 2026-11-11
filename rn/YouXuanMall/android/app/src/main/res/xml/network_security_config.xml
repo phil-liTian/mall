@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">m.starchase.xyz</domain>
+        <domain includeSubdomains="false">macro-oss.oss-cn-shenzhen.aliyuncs.com</domain>
+        <domain includeSubdomains="false">img10.360buyimg.com</domain>
+        <domain includeSubdomains="false">img13.360buyimg.com</domain>
+    </domain-config>
+</network-security-config>

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 取消订单消息的发送者
- * Created by macro on 2018/9/14.
+ * Created by phil on 2026/10/13.
  */
 @Slf4j
 @Component

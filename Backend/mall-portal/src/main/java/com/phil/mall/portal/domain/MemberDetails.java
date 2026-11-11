@@ -10,7 +10,7 @@ import java.util.Collection;
 
 /**
  * SpringSecurity需要的用户信息封装类
- * Created by macro on 2018/8/3.
+ * Created by phil on 2026/10/9.
  */
 public class MemberDetails implements UserDetails {
     private final UmsMember umsMember;

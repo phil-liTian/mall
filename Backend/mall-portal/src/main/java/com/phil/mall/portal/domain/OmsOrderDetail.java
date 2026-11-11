@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * 包含商品信息的订单详情
- * Created by macro on 2018/9/4.
+ * Created by phil on 2026/10/9.
  */
 @Getter
 @Setter

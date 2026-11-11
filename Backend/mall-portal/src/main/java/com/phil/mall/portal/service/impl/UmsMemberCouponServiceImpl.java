@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 /**
  * 会员优惠券管理Service实现类
- * Created by macro on 2018/8/29.
+ * Created by phil on 2026/10/9.
  */
 @Service
 public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {

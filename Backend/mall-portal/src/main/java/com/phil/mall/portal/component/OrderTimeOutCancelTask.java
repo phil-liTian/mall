@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * 超时订单关闭的定时兜底任务
  * 与 MQ 延迟消息配套：MQ 管及时性，定时任务管最终一致性
- * Created by macro on 2018/8/24.
+ * Created by phil on 2026/10/13.
  */
 @Slf4j
 @Component

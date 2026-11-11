@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * 前台品牌管理Service
- * Created by macro on 2020/5/15.
+ * Created by phil on 2026/10/9.
  */
 public interface PmsPortalBrandService {
     /**

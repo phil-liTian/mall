@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 消息队列配置（订单超时取消，TTL + DLX 拓扑）
- * Created by macro on 2018/9/14.
+ * Created by phil on 2026/10/13.
  */
 @Configuration
 public class RabbitMqConfig {

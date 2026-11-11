@@ -1,8 +1,6 @@
 package com.phil.mall.portal.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
-import com.github.pagehelper.PageHelper;
 import com.phil.mall.mapper.*;
 import com.phil.mall.model.*;
 import com.phil.mall.portal.dao.PortalProductDao;
@@ -18,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * 前台订单管理Service实现类
- * Created by macro on 2020/4/6.
+ * Created by phil on 2026/10/9.
  */
 @Service
 public class PmsPortalProductServiceImpl implements PmsPortalProductService {
@@ -40,35 +38,6 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     private PmsProductFullReductionMapper productFullReductionMapper;
     @Autowired
     private PortalProductDao portalProductDao;
-
-    @Override
-    public List<PmsProduct> search(String keyword, Long brandId, Long productCategoryId, Integer pageNum, Integer pageSize, Integer sort) {
-        PageHelper.startPage(pageNum, pageSize);
-        PmsProductExample example = new PmsProductExample();
-        PmsProductExample.Criteria criteria = example.createCriteria();
-        criteria.andDeleteStatusEqualTo(0);
-        criteria.andPublishStatusEqualTo(1);
-        if (StrUtil.isNotEmpty(keyword)) {
-            criteria.andNameLike("%" + keyword + "%");
-        }
-        if (brandId != null) {
-            criteria.andBrandIdEqualTo(brandId);
-        }
-        if (productCategoryId != null) {
-            criteria.andProductCategoryIdEqualTo(productCategoryId);
-        }
-        //1->按新品；2->按销量；3->价格从低到高；4->价格从高到低
-        if (sort == 1) {
-            example.setOrderByClause("id desc");
-        } else if (sort == 2) {
-            example.setOrderByClause("sale desc");
-        } else if (sort == 3) {
-            example.setOrderByClause("price asc");
-        } else if (sort == 4) {
-            example.setOrderByClause("price desc");
-        }
-        return productMapper.selectByExample(example);
-    }
 
     @Override
     public List<PmsProductCategoryNode> categoryTreeList() {
